@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/css/style.min.css" />
+  <!-- Link to the new CSS file -->
+  <link rel="stylesheet" href="./css/css1.css" />
+  <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  <title>Autocorrelation & Power Spectral Density</title>
+</head>
+
+<body>
+  <div class="container">
+    <div class="tasks-heading">Tasks</div>
+
+    <div class="v-tabs">
+      <ul>
+        <li class="active"><a href="exp1.html">Sub Experiment - 1</a></li>
+        <li><a href="exp2.html">Sub Experiment - 2</a></li>
+        <li><a href="exp3.html">Sub Experiment - 3</a></li>
+      </ul>
+    </div>
+
+    <div class="subheading-box">
+      <p class="title">Identifying a Valid Autocorrelation Function</p>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-11-desktop is-12-tablet is-12-mobile">
+        <div class="v-collapsible-instruction-container v-instruction-container">
+          <div class="v-collapsible is-size-5">Instructions</div>
+          <div class="v-content" style="text-align: left; padding-left: 10%; padding-right: 10%">
+             <h4 style="font-weight: 600; font-size: 1.15em;">Theory</h4>
+            <p>An Autocorrelation Function (ACF), denoted as \(R(\tau)\), has several key mathematical properties. Any function that violates one or more of these properties cannot be a valid ACF.</p>
+            <ul style="list-style: disc; font-size: 1em; line-height: 1.6; margin-left: 20px; margin-top: 1rem;">
+              <li>
+                <strong>Maximum at Zero Lag:</strong> The value of the ACF at the origin must be its maximum value. Mathematically, \(|R(\tau)| \le R(0)\) for all \(\tau\).
+              </li>
+              <li>
+                <strong>Even Symmetry:</strong> The ACF must be an even function, meaning it is symmetric about the vertical axis. Mathematically, \(R(\tau) = R(-\tau)\).
+              </li>
+              <li>
+                <strong>Fourier Transform Property:</strong> The Fourier transform of an ACF is the Power Spectral Density (PSD), which must be non-negative for all frequencies. This implies the ACF must have a specific "shape" (be positive semi-definite). Functions with sharp, unnatural corners or certain oscillations violate this.
+              </li>
+            </ul>
+            <h4 style="font-weight: 600; font-size: 1.15em; margin-top: 1rem;">Procedure</h4>
+             <ul style="list-style: disc; font-size: 1em; line-height: 1.6; margin-left: 20px;">
+              <li>
+                Four graphs will be displayed below. Only one of them represents a valid Autocorrelation Function.
+              </li>
+              <li>
+                Analyze each graph to see if it adheres to all the properties described in the theory.
+              </li>
+              <li>
+                Click on the graph you believe is the **correct** one.
+              </li>
+              <li>
+                The **Observations** panel will provide feedback on your selection and explain why each of the other graphs is invalid.
+              </li>
+               <li>
+                Press **"Generate New Problem"** to try again with a new set of randomized graphs.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+
+    <section id="page4">
+      <div class="columns is-centered">
+        <div class="column is-11-desktop is-12-tablet is-12-mobile">
+          <div class="v-datalist-container components-list">
+            <h3 class="v-datalist-title" style="text-align: center;">
+              ACF Property Challenge
+            </h3>
+
+            <div class="white-boxed-panel">
+              <div class="controls-container">
+                  <button id="generateBtn" class="button is-primary is-medium">Generate New Problem</button>
+              </div>
+            </div>
+
+            <!-- Container for the 4 graphs -->
+            <div class="white-boxed-panel">
+                <h4 class="v-datalist-subtitle">Select the Valid Autocorrelation Function:</h4>
+                <div id="graph-container" class="graph-grid">
+                  <!-- JS will populate this area with graphs -->
+                </div>
+            </div>
+
+            <!-- Container for feedback -->
+            <div class="white-boxed-panel">
+              <h4 class="v-datalist-subtitle">Observations</h4>
+              <div id="observations">
+                <p class="initial-text">Select a graph above to see the analysis.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/js/script.js"></script>
+  <!-- Link to the new JS file -->
+  <script src="./js/graph.js"></script>
+</body>
+</html>
