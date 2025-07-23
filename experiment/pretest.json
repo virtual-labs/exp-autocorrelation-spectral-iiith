@@ -2,38 +2,89 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "What does the autocorrelation function measure in a random process?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "The mean of the process",
+        "b": "The similarity between values of the process at different times",
+        "c": "The frequency content of the process",
+        "d": "The derivative of the process"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "The mean is a first-order statistic, not related to autocorrelation.",
+        "b": "Correct. Autocorrelation measures how similar a signal is to a delayed version of itself.",
+        "c": "Frequency content is related to PSD, not directly to autocorrelation.",
+        "d": "The derivative is unrelated to autocorrelation in this context."
       },
-      "correctAnswer": "a",
+      "correctAnswer": "b",
       "difficulty": "beginner"
     },
     {
-      "question": "This is a Sample Question 2?",
+      "question": "In a wide-sense stationary (WSS) process, the autocorrelation function depends on:",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "Absolute time",
+        "b": "Frequency",
+        "c": "Time difference (lag)",
+        "d": "Mean square value"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "For WSS, autocorrelation is independent of absolute time.",
+        "b": "Frequency is related to the PSD, not autocorrelation directly.",
+        "c": "Correct. In WSS processes, autocorrelation depends only on time lag (τ).",
+        "d": "Mean square value is a related concept but not the definition of autocorrelation."
       },
       "correctAnswer": "c",
       "difficulty": "beginner"
+    },
+    {
+      "question": "What is the power spectral density (PSD) of a WSS process defined as?",
+      "answers": {
+        "a": "The average value of the process over time",
+        "b": "The derivative of the autocorrelation function",
+        "c": "The Fourier transform of the autocorrelation function",
+        "d": "The autocorrelation function of the mean"
+      },
+      "explanations": {
+        "a": "This describes the mean, not the PSD.",
+        "b": "Incorrect. The derivative is not related to PSD.",
+        "c": "Correct. PSD is the Fourier transform of the autocorrelation function in WSS processes.",
+        "d": "Mean does not define PSD."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Which of the following is **not** true for a wide-sense stationary process?",
+      "answers": {
+        "a": "Mean is constant over time",
+        "b": "Variance depends on time",
+        "c": "Autocorrelation depends only on time difference",
+        "d": "Second-order statistics do not vary with time"
+      },
+      "explanations": {
+        "a": "WSS processes have constant mean.",
+        "b": "Correct. Variance must be constant, so this is not true.",
+        "c": "WSS implies autocorrelation is a function of lag only.",
+        "d": "This is a valid property of WSS."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Which domain does the power spectral density (PSD) represent the signal in?",
+      "answers": {
+        "a": "Time domain",
+        "b": "Spatial domain",
+        "c": "Lag domain",
+        "d": "Frequency domain"
+      },
+      "explanations": {
+        "a": "Time domain is for original signal or autocorrelation function.",
+        "b": "Spatial domain is not relevant here.",
+        "c": "Lag domain is used in autocorrelation, not PSD.",
+        "d": "Correct. PSD is a frequency domain representation of the signal's power distribution."
+      },
+      "correctAnswer": "d",
+      "difficulty": "intermediate"
     }
   ]
 }
