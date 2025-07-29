@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/css/style.min.css" />
+    <!-- Link to the experiment-specific CSS file -->
+    <link rel="stylesheet" href="./css/css3.css" />
+    <script type="text/javascript" id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <!-- Add Chart.js for plotting -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>ACF & Power Spectral Density</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="tasks-heading">Tasks</div>
+
+        <div class="v-tabs">
+            <ul>
+                <li><a href="exp1.html">Sub Experiment - 1</a></li>
+                <li><a href="exp2.html">Sub Experiment - 2</a></li>
+                <li class="active"><a href="exp3.html">Sub Experiment - 3</a></li>
+            </ul>
+        </div>
+
+        <div class="subheading-box">
+            <p class="title">Relationship between ACF and Power Spectral Density</p>
+        </div>
+
+        <div class="columns is-centered">
+            <div class="column is-11-desktop is-12-tablet is-12-mobile">
+                <div class="v-collapsible-instruction-container v-instruction-container">
+                    <div class="v-collapsible is-size-5">Instructions</div>
+                    <div class="v-content" style="text-align: left; padding-left: 10%; padding-right: 10%">
+                        <h4 style="font-weight: 600; font-size: 1.15em;">Theory</h4>
+                        <p>The <strong>Wiener-Khinchin Theorem</strong> is a fundamental concept in signal processing. It states that the Power Spectral Density (PSD) of a wide-sense-stationary random process is the Fourier transform of its Autocorrelation Function (ACF).</p>
+                         <p style="text-align: center; font-size: 1.2em; margin: 1rem 0;">\( S_{xx}(f) = \mathcal{F}\{R_{xx}(\tau)\} \)</p>
+                        <p>This experiment allows you to visually verify this theorem in real-time.</p>
+                        <h4 style="font-weight: 600; font-size: 1.15em; margin-top: 1rem;">Procedure</h4>
+                        <ul style="list-style: disc; font-size: 1em; line-height: 1.6; margin-left: 20px;">
+                            <li>Select a signal type from the dropdown menu.</li>
+                            <li>Use the sliders that appear to control the signal's parameters, such as frequency and amplitude.</li>
+                            <li>As you move the sliders, observe how the <strong>Signal Waveform</strong>, its <strong>ACF</strong>, and its <strong>PSD</strong> all change in real-time.</li>
+                             <li>The <strong>Observations</strong> panel will provide guiding questions to help you understand the relationship between the plots for each signal type.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+
+        <section id="page6">
+            <div class="columns is-centered">
+                <div class="column is-11-desktop is-12-tablet is-12-mobile">
+                    <div class="v-datalist-container components-list">
+                        <h3 class="v-datalist-title" style="text-align: center;">
+                           ACF to PSD Explorer
+                        </h3>
+
+                        <!-- Signal Controls -->
+                        <div class="white-boxed-panel control-panel">
+                            <div class="control-item">
+                                <label for="signal-type" class="label">Select Signal Type:</label>
+                                <div class="select is-primary is-fullwidth">
+                                    <select id="signal-type">
+                                        <option value="sine">Sine Wave</option>
+                                        <option value="square">Square Wave</option>
+                                        <option value="noise">White Noise</option>
+                                        <option value="sum_sines">Sum of Two Sines</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="parameter-sliders" class="control-item">
+                                <!-- Sliders will be dynamically inserted here by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Plotting Area -->
+                        <div class="plots-container">
+                            <!-- Top Plot: Signal -->
+                            <div class="white-boxed-panel plot-wrapper-top">
+                                <h4 class="v-datalist-subtitle">Signal Waveform: x(t)</h4>
+                                <canvas id="signalChart"></canvas>
+                            </div>
+                            <!-- Bottom-Left Plot: ACF -->
+                            <div class="white-boxed-panel plot-wrapper-bottom">
+                                <h4 class="v-datalist-subtitle">Autocorrelation: R(\(\tau\))</h4>
+                                <canvas id="acfChart"></canvas>
+                            </div>
+                            <!-- Bottom-Right Plot: PSD -->
+                            <div class="white-boxed-panel plot-wrapper-bottom">
+                                <h4 class="v-datalist-subtitle">Power Spectral Density: S(f)</h4>
+                                <canvas id="psdChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Observations Panel -->
+                        <div class="white-boxed-panel">
+                            <h4 class="v-datalist-subtitle">Observations</h4>
+                            <div id="observations">
+                                <!-- Observation text will be dynamically inserted here by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/js/script.js"></script>
+    <!-- Link to the new experiment's JS file -->
+    <script src="./js/script3.js"></script>
+</body>
+</html>
