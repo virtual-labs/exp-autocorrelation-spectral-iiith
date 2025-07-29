@@ -68,15 +68,21 @@ function setupProblem() {
   observationsDiv.innerHTML = '<p class="initial-text">Select a graph above to see the analysis.</p>';
   graphContainer.classList.remove('disabled');
 
-  // 2. Select one of each type of graph
-  const correctGraph = getRandomElement(graphData.correct);
-  const symmetryViolation = getRandomElement(graphData.violatesSymmetry);
-  const maxLagViolation = getRandomElement(graphData.violatesMaxLag);
-  const shapeViolation = getRandomElement(graphData.violatesShape);
+  // Remove retry button if present
+  const oldRetry = document.getElementById('retryBtn');
+  if (oldRetry) oldRetry.remove();
 
-  // 3. Combine and shuffle
-  let problemGraphs = [correctGraph, symmetryViolation, maxLagViolation, shapeViolation];
-  problemGraphs = shuffleArray(problemGraphs);
+  // 2. Gather all graphs from all categories
+  let allGraphs = [];
+  Object.keys(graphData).forEach(category => {
+    graphData[category].forEach(graph => {
+      allGraphs.push(graph);
+    });
+  });
+
+  // 3. Shuffle and pick 4 unique graphs
+  allGraphs = shuffleArray(allGraphs);
+  let problemGraphs = allGraphs.slice(0, 4);
 
   // 4. Create and display graph cards in the DOM
   problemGraphs.forEach((graph, index) => {
@@ -84,12 +90,12 @@ function setupProblem() {
     card.className = 'graph-card';
     card.dataset.property = graph.property;
     card.dataset.explanation = graph.explanation;
+    card.dataset.src = graph.src;
     card.dataset.id = `graph-${index}`; // Unique ID for feedback
 
     const img = document.createElement('img');
     img.src = graph.src;
     img.alt = `Graph ${index + 1}`;
-    
     card.appendChild(img);
     card.addEventListener('click', handleGraphClick);
     graphContainer.appendChild(card);
@@ -111,24 +117,37 @@ function handleGraphClick(event) {
   const selectedProperty = selectedCard.dataset.property;
 
   // Provide visual feedback
-  document.querySelectorAll('.graph-card').forEach(card => {
-    if (card.dataset.property === 'correct') {
-        card.classList.add('correct-choice');
-    }
-  });
-
+  // Do NOT reveal the correct answer
   if (selectedProperty !== 'correct') {
       selectedCard.classList.add('incorrect-choice');
   }
 
-  displayFeedback(selectedProperty);
+  displayFeedback(selectedCard, selectedProperty);
+
+  // Add retry button only if incorrect
+  if (selectedProperty !== 'correct') {
+    addRetryButton();
+  }
+}
+
+function addRetryButton() {
+    if (!document.getElementById('retryBtn')) {
+        const retryBtn = document.createElement('button');
+        retryBtn.id = 'retryBtn';
+        retryBtn.className = 'button is-warning is-medium';
+        retryBtn.textContent = 'Retry';
+        retryBtn.style.marginTop = '1.5rem';
+        retryBtn.onclick = setupProblem;
+        observationsDiv.appendChild(retryBtn);
+    }
 }
 
 /**
- * Displays detailed feedback in the observations panel.
+ * Displays feedback in the observations panel.
+ * @param {HTMLElement} selectedCard The card the user selected.
  * @param {string} selectedProperty The 'property' of the graph the user selected.
  */
-function displayFeedback(selectedProperty) {
+function displayFeedback(selectedCard, selectedProperty) {
     let feedbackHTML = '';
 
     // Main feedback message
@@ -137,21 +156,8 @@ function displayFeedback(selectedProperty) {
         feedbackHTML += '<p class="has-text-centered">You have correctly identified the valid Autocorrelation Function.</p>';
     } else {
         feedbackHTML += '<h5 class="feedback-incorrect">Incorrect.</h5>';
-        feedbackHTML += '<p class="has-text-centered">Let\'s review the properties to see why this choice is invalid.</p>';
+        feedbackHTML += `<p class="has-text-centered">${selectedCard.dataset.explanation}</p>`;
     }
-
-    feedbackHTML += '<hr>';
-
-    // Detailed analysis of all four graphs shown
-    const allGraphs = document.querySelectorAll('.graph-card');
-    allGraphs.forEach((card, index) => {
-        const isCorrect = card.dataset.property === 'correct';
-        feedbackHTML += `
-            <div class="analysis-item ${isCorrect ? 'correct' : 'incorrect'}">
-                <p><strong>Graph ${index + 1}:</strong> ${card.dataset.explanation}</p>
-            </div>
-        `;
-    });
 
     observationsDiv.innerHTML = feedbackHTML;
 }
