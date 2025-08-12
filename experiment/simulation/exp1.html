@@ -5,10 +5,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/css/style.min.css" />
-  <!-- Link to the new CSS file -->
+  <!-- Link to the experiment-specific CSS file -->
   <link rel="stylesheet" href="./css/css1.css" />
-  <script type="text/javascript" id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
   <title>Autocorrelation & Power Spectral Density</title>
 </head>
 
@@ -17,7 +15,7 @@
     <div class="tasks-heading">Tasks</div>
 
     <div class="v-tabs">
-      <ul>
+      <ul class="has-text-centered">
         <li class="active"><a href="exp1.html">Sub Experiment - 1</a></li>
         <li><a href="exp2.html">Sub Experiment - 2</a></li>
         <li><a href="exp3.html">Sub Experiment - 3</a></li>
@@ -34,34 +32,34 @@
           <div class="v-collapsible is-size-5">Instructions</div>
           <div class="v-content" style="text-align: left; padding-left: 10%; padding-right: 10%">
              <h4 style="font-weight: 600; font-size: 1.15em;">Theory</h4>
-            <p>An Autocorrelation Function (ACF), denoted as \(R(\tau)\), has several key mathematical properties. Any function that violates one or more of these properties cannot be a valid ACF.</p>
+            <p>An Autocorrelation Function (ACF), denoted as R(τ), has several key mathematical properties. Any function that violates one or more of these properties cannot be a valid ACF.</p>
             <ul style="list-style: disc; font-size: 1em; line-height: 1.6; margin-left: 20px; margin-top: 1rem;">
               <li>
-                <strong>Maximum at Zero Lag:</strong> The value of the ACF at the origin must be its maximum value. Mathematically, \(|R(\tau)| \le R(0)\) for all \(\tau\).
+                <strong>Maximum at Zero Lag:</strong> The value of the ACF at the origin must be its maximum absolute value. Mathematically, |R(τ)| ≤ R(0) for all τ.
               </li>
               <li>
-                <strong>Even Symmetry:</strong> The ACF must be an even function, meaning it is symmetric about the vertical axis. Mathematically, \(R(\tau) = R(-\tau)\).
+                <strong>Even Symmetry:</strong> The ACF must be an even function, meaning it is symmetric about the vertical axis. Mathematically, R(τ) = R(-τ).
               </li>
               <li>
-                <strong>Fourier Transform Property:</strong> The Fourier transform of an ACF is the Power Spectral Density (PSD), which must be non-negative for all frequencies. This implies the ACF must have a specific "shape" (be positive semi-definite). Functions with sharp, unnatural corners or certain oscillations violate this.
+                <strong>Fourier Transform Property:</strong> The Fourier transform of an ACF must be non-negative everywhere. This is harder to verify visually but excludes functions with certain "unnatural" shapes.
               </li>
             </ul>
             <h4 style="font-weight: 600; font-size: 1.15em; margin-top: 1rem;">Procedure</h4>
              <ul style="list-style: disc; font-size: 1em; line-height: 1.6; margin-left: 20px;">
               <li>
-                Four graphs will be displayed below. Only one of them represents a valid Autocorrelation Function.
+                Press <strong>"Generate New Problem"</strong> to begin. Four graphs will be displayed.
               </li>
               <li>
-                Analyze each graph to see if it adheres to all the properties described in the theory.
+                Only one of the four graphs represents a valid Autocorrelation Function.
               </li>
               <li>
-                Click on the graph you believe is the **correct** one.
+                Analyze each graph based on the properties of symmetry and the location of the maximum value.
               </li>
               <li>
-                The **Observations** panel will provide feedback on your selection and explain why each of the other graphs is invalid.
+                Click on the graph you believe is the <strong>valid</strong> one.
               </li>
-               <li>
-                Press **"Generate New Problem"** to try again with a new set of randomized graphs.
+              <li>
+                The <strong>Observations</strong> panel will provide immediate feedback. If you are incorrect, it will explain why and highlight the correct answer.
               </li>
             </ul>
           </div>
@@ -96,7 +94,7 @@
             <div class="white-boxed-panel">
               <h4 class="v-datalist-subtitle">Observations</h4>
               <div id="observations">
-                <p class="initial-text">Select a graph above to see the analysis.</p>
+                <p class="initial-text">Press "Generate New Problem" to start.</p>
               </div>
             </div>
           </div>
@@ -107,6 +105,6 @@
 
   <script src="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/js/script.js"></script>
   <!-- Link to the new JS file -->
-  <script src="./js/graph.js"></script>
+  <script src="./js/script1.js"></script>
 </body>
 </html>
