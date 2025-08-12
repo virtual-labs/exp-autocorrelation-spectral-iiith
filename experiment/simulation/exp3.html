@@ -7,11 +7,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/css/style.min.css" />
     <!-- Link to the experiment-specific CSS file -->
     <link rel="stylesheet" href="./css/css3.css" />
-    <script type="text/javascript" id="MathJax-script" async
-            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <!-- Add Chart.js for plotting -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>ACF & Power Spectral Density</title>
+    <title>Stationary & WSS Processes</title>
 </head>
 
 <body>
@@ -27,91 +25,91 @@
         </div>
 
         <div class="subheading-box">
-            <p class="title">Relationship between ACF and Power Spectral Density</p>
+            <p class="title">Connecting Process Descriptions to Plots</p>
         </div>
-
+        
         <div class="columns is-centered">
             <div class="column is-11-desktop is-12-tablet is-12-mobile">
                 <div class="v-collapsible-instruction-container v-instruction-container">
                     <div class="v-collapsible is-size-5">Instructions</div>
                     <div class="v-content" style="text-align: left; padding-left: 10%; padding-right: 10%">
                         <h4 style="font-weight: 600; font-size: 1.15em;">Theory</h4>
-                        <p>The <strong>Wiener-Khinchin Theorem</strong> is a fundamental concept in signal processing. It states that the Power Spectral Density (PSD) of a wide-sense-stationary random process is the Fourier transform of its Autocorrelation Function (ACF).</p>
-                         <p style="text-align: center; font-size: 1.2em; margin: 1rem 0;">\( S_{xx}(f) = \mathcal{F}\{R_{xx}(\tau)\} \)</p>
-                        <p>This experiment allows you to visually verify this theorem in real-time.</p>
-                        <h4 style="font-weight: 600; font-size: 1.15em; margin-top: 1rem;">Procedure</h4>
-                        <ul style="list-style: disc; font-size: 1em; line-height: 1.6; margin-left: 20px;">
-                            <li>Select a signal type from the dropdown menu.</li>
-                            <li>Use the sliders that appear to control the signal's parameters, such as frequency and amplitude.</li>
-                            <li>As you move the sliders, observe how the <strong>Signal Waveform</strong>, its <strong>ACF</strong>, and its <strong>PSD</strong> all change in real-time.</li>
-                             <li>The <strong>Observations</strong> panel will provide guiding questions to help you understand the relationship between the plots for each signal type.</li>
+                        <p>For Wide-Sense Stationary (WSS) processes, the Autocorrelation Function (ACF) and the Power Spectral Density (PSD) are fundamental tools for analysis. They are related by the <strong>Wiener-Khinchin Theorem</strong>, which states that the PSD is the Fourier transform of the ACF.</p>
+                        <ul style="list-style: disc; font-size: 1em; line-height: 1.6; margin-left: 20px; margin-top: 1rem;">
+                            <li><strong>Autocorrelation Function (ACF):</strong> Shows how a signal correlates with a time-shifted version of itself. It reveals the internal "memory" or repetitive structure of the process.</li>
+                            <li><strong>Power Spectral Density (PSD):</strong> Shows how the power of a signal is distributed over different frequencies. It reveals the frequency content of the process.</li>
                         </ul>
+                        <h4 style="font-weight: 600; font-size: 1.15em; margin-top: 1rem;">Procedure</h4>
+                        <ol style="list-style: decimal; font-size: 1em; line-height: 1.6; margin-left: 20px;">
+                            <li>A description of a physical random process will be shown. Analyze the description to understand its nature.</li>
+                            <li><strong>Step 1:</strong> Select the mathematical equation that best models the described process.</li>
+                            <li><strong>Step 2:</strong> Based on the process, identify the correct ACF plot from a set of options.</li>
+                            <li><strong>Step 3:</strong> Identify the correct PSD plot that corresponds to the ACF.</li>
+                            <li>After completing all steps, a detailed observation will explain the connections between the description, equation, ACF, and PSD.</li>
+                        </ol>
                     </div>
                 </div>
             </div>
         </div>
         <br />
 
-        <section id="page6">
-            <div class="columns is-centered">
-                <div class="column is-11-desktop is-12-tablet is-12-mobile">
-                    <div class="v-datalist-container components-list">
-                        <h3 class="v-datalist-title" style="text-align: center;">
-                           ACF to PSD Explorer
-                        </h3>
+        <section id="experiment-workbench">
+            <!-- Task 1: Equation Inference -->
+            <div class="task-panel" id="task1-equation-inference">
+                <h3 class="task-title">Step 1: Infer the Process Equation</h3>
+                <div class="description-box">
+                    <p class="v-datalist-subtitle">Process Description:</p>
+                    <p id="process-description" class="is-size-5 has-text-centered"></p>
+                </div>
+                <div class="options-container" id="equation-options">
+                    <!-- JS will populate equation choices here -->
+                </div>
+                <div class="submit-container">
+                    <button id="submit-task1" class="button is-success is-medium">Submit Answer</button>
+                    <div id="feedback-task1" class="feedback-message"></div>
+                </div>
+            </div>
 
-                        <!-- Signal Controls -->
-                        <div class="white-boxed-panel control-panel">
-                            <div class="control-item">
-                                <label for="signal-type" class="label">Select Signal Type:</label>
-                                <div class="select is-primary is-fullwidth">
-                                    <select id="signal-type">
-                                        <option value="sine">Sine Wave</option>
-                                        <option value="square">Square Wave</option>
-                                        <option value="noise">White Noise</option>
-                                        <option value="sum_sines">Sum of Two Sines</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div id="parameter-sliders" class="control-item">
-                                <!-- Sliders will be dynamically inserted here by JS -->
-                            </div>
-                        </div>
+            <!-- Task 2: ACF Identification -->
+            <div class="task-panel" id="task2-acf-identification" style="display: none;">
+                <h3 class="task-title">Step 2: Identify the Autocorrelation Function (ACF)</h3>
+                 <p class="task-prompt">Based on the process, which of the following plots represents its Autocorrelation Function, R(τ)?</p>
+                <div class="plots-container" id="acf-plots">
+                    <!-- JS will generate ACF plots here -->
+                </div>
+                <div class="submit-container">
+                    <button id="submit-task2" class="button is-success is-medium">Submit Answer</button>
+                    <div id="feedback-task2" class="feedback-message"></div>
+                </div>
+            </div>
 
-                        <!-- Plotting Area -->
-                        <div class="plots-container">
-                            <!-- Top Plot: Signal -->
-                            <div class="white-boxed-panel plot-wrapper-top">
-                                <h4 class="v-datalist-subtitle">Signal Waveform: x(t)</h4>
-                                <canvas id="signalChart"></canvas>
-                            </div>
-                            <!-- Bottom-Left Plot: ACF -->
-                            <div class="white-boxed-panel plot-wrapper-bottom">
-                                <h4 class="v-datalist-subtitle">Autocorrelation: R(\(\tau\))</h4>
-                                <canvas id="acfChart"></canvas>
-                            </div>
-                            <!-- Bottom-Right Plot: PSD -->
-                            <div class="white-boxed-panel plot-wrapper-bottom">
-                                <h4 class="v-datalist-subtitle">Power Spectral Density: S(f)</h4>
-                                <canvas id="psdChart"></canvas>
-                            </div>
-                        </div>
-                        
-                        <!-- Observations Panel -->
-                        <div class="white-boxed-panel">
-                            <h4 class="v-datalist-subtitle">Observations</h4>
-                            <div id="observations">
-                                <!-- Observation text will be dynamically inserted here by JS -->
-                            </div>
-                        </div>
-                    </div>
+            <!-- Task 3: PSD Identification -->
+            <div class="task-panel" id="task3-psd-identification" style="display: none;">
+                <h3 class="task-title">Step 3: Identify the Power Spectral Density (PSD)</h3>
+                <p class="task-prompt">Now, which of the following plots represents the Power Spectral Density (PSD), S(f)?</p>
+                <div class="plots-container" id="psd-plots">
+                    <!-- JS will generate PSD plots here -->
+                </div>
+                 <div class="submit-container">
+                    <button id="submit-task3" class="button is-success is-medium">Submit Answer</button>
+                    <div id="feedback-task3" class="feedback-message"></div>
+                </div>
+            </div>
+            
+            <!-- Task 4: Final Explanation -->
+            <div class="task-panel" id="task4-final-explanation" style="display: none;">
+                <h3 class="task-title">Observation & Complete Analysis</h3>
+                <div id="final-explanation-content">
+                    <!-- JS will populate the full explanation here -->
+                </div>
+                 <div class="submit-container">
+                    <button id="restart-btn" class="button is-primary is-medium">Start New Process</button>
                 </div>
             </div>
         </section>
     </div>
 
     <script src="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/js/script.js"></script>
-    <!-- Link to the new experiment's JS file -->
     <script src="./js/script3.js"></script>
 </body>
 </html>

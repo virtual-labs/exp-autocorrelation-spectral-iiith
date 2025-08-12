@@ -1,250 +1,257 @@
 // --------------------------------------
-// 0. A proper FFT Implementation (to replace the flawed DFT)
-// Sourced from: https://github.com/dntj/jsfft (MIT License)
-//
-// We include it directly here to keep the experiment self-contained.
+// 1. DOM References
 // --------------------------------------
-function FFT(size, sampleRate) {
-  this.size = size;
-  this.sampleRate = sampleRate;
-  this.spectrum = new Float32Array(size / 2);
-  this.real = new Float32Array(size);
-  this.imag = new Float32Array(size);
-  this.reverseTable = new Uint32Array(size);
-  let limit = 1, bit = size >> 1;
-  while (limit < size) {
-    for (let i = 0; i < limit; i++) this.reverseTable[i + limit] = this.reverseTable[i] + bit;
-    limit = limit << 1;
-    bit = bit >> 1;
-  }
-  this.sinTable = new Float32Array(size);
-  this.cosTable = new Float32Array(size);
-  for (let i = 0; i < size; i++) {
-    this.sinTable[i] = Math.sin(-Math.PI / i);
-    this.cosTable[i] = Math.cos(-Math.PI / i);
-  }
+const processDescription = document.getElementById('process-description');
+const equationOptionsContainer = document.getElementById('equation-options');
+const acfPlotsContainer = document.getElementById('acf-plots');
+const psdPlotsContainer = document.getElementById('psd-plots');
+
+const task1Panel = document.getElementById('task1-equation-inference');
+const task2Panel = document.getElementById('task2-acf-identification');
+const task3Panel = document.getElementById('task3-psd-identification');
+const task4Panel = document.getElementById('task4-final-explanation');
+
+const submitTask1Btn = document.getElementById('submit-task1');
+const submitTask2Btn = document.getElementById('submit-task2');
+const submitTask3Btn = document.getElementById('submit-task3');
+const restartBtn = document.getElementById('restart-btn');
+
+const feedback1 = document.getElementById('feedback-task1');
+const feedback2 = document.getElementById('feedback-task2');
+const feedback3 = document.getElementById('feedback-task3');
+
+const finalExplanationContent = document.getElementById('final-explanation-content');
+
+// --------------------------------------
+// 2. Process Database
+// --------------------------------------
+const processDatabase = [
+    {
+        id: 'sine_random_phase',
+        description: "A pure tone from a stable oscillator whose starting phase is random between measurements.",
+        correctEquation: { id: 'eq1', math: `<math><mi>X</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>A</mi><mo>⁡</mo><mrow><mi>cos</mi><mo>⁡</mo><mrow><mo>(</mo><msub><mi>ω</mi><mn>0</mn></msub><mi>t</mi><mo>+</mo><mi>Θ</mi><mo>)</mo></mrow></mrow></math>` },
+        distractorEquations: [
+            { id: 'eq2', math: `<math><mi>X</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>A</mi><mo>⁡</mo><mrow><mi>cos</mi><mo>⁡</mo><mrow><mo>(</mo><msub><mi>ω</mi><mn>0</mn></msub><mi>t</mi><mo>)</mo></mrow></mrow></math>` },
+            { id: 'eq3', math: `<math><mi>X</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>=</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>]</mo></math>` }
+        ],
+        acf: { id: 'acf_cosine', title: 'ACF: Cosine', generator: (labels) => labels.map(tau => Math.cos(2 * Math.PI * 0.5 * tau)) },
+        psd: {
+            id: 'psd_impulses', title: 'PSD: Frequency Impulses', generator: (labels) => {
+                const data = Array(labels.length).fill(0);
+                const posFreqIndex = labels.findIndex(f => f >= 0.5);
+                const negFreqIndex = labels.findIndex(f => f >= -0.5);
+                if (posFreqIndex !== -1) data[posFreqIndex] = 1;
+                if (negFreqIndex !== -1) data[negFreqIndex] = 1;
+                return data;
+            }
+        },
+        explanation: `
+            <div class="explanation-section"><h4>1. The Equation</h4><p>A "pure tone" implies a sinusoidal function like cosine or sine. The key is that the "starting phase is random." This randomness is captured by the random variable <i>Θ</i> inside the cosine argument. A fixed phase would result in a non-stationary process.</p></div>
+            <div class="explanation-section"><h4>2. The Autocorrelation Function (ACF)</h4><p>The ACF for a sinusoidal process with random phase is a cosine wave at the same frequency that does not decay. This indicates perfect correlation when the time lag <i>τ</i> is a multiple of the period, reflecting the process's perfectly repetitive nature.</p><div class="final-plot-container"><canvas id="final-acf-plot"></canvas></div></div>
+            <div class="explanation-section"><h4>3. The Power Spectral Density (PSD)</h4><p>The Wiener-Khinchin theorem states the PSD is the Fourier Transform of the ACF. The transform of a non-decaying cosine is a pair of impulses (delta functions) at the positive and negative frequencies of the sinusoid. This shows that all the process's power is concentrated at a single frequency <i>ω₀</i>.</p><div class="final-plot-container"><canvas id="final-psd-plot"></canvas></div></div>`
+    },
+    {
+        id: 'white_noise',
+        description: "A signal where each sample is a completely random, independent value from a consistent source, like thermal noise in a resistor.",
+        correctEquation: { id: 'eq3', math: `<math><mi>X</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>=</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>]</mo></math>` },
+        distractorEquations: [
+            { id: 'eq1', math: `<math><mi>X</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>A</mi><mo>⁡</mo><mrow><mi>cos</mi><mo>⁡</mo><mrow><mo>(</mo><msub><mi>ω</mi><mn>0</mn></msub><mi>t</mi><mo>+</mo><mi>Θ</mi><mo>)</mo></mrow></mrow></math>` },
+            { id: 'eq4', math: `<math><mi>X</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>=</mo><mi>α</mi><mo>⁢</mo><mi>X</mi><mo>[</mo><mi>n</mi><mo>-</mo><mn>1</mn><mo>]</mo><mo>+</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>]</mo></math>` }
+        ],
+        acf: { id: 'acf_impulse', title: 'ACF: Impulse', generator: (labels) => labels.map(tau => Math.abs(tau) < 0.01 ? 1 : 0) },
+        psd: { id: 'psd_constant', title: 'PSD: Constant (Flat)', generator: (labels) => Array(labels.length).fill(0.5) },
+        explanation: `
+            <div class="explanation-section"><h4>1. The Equation</h4><p>This describes discrete white noise. The value at any time <i>n</i>, denoted <i>W[n]</i>, is an independent random variable. There is no dependency on past values.</p></div>
+            <div class="explanation-section"><h4>2. The Autocorrelation Function (ACF)</h4><p>Because each sample is independent of all others, the process is only correlated with itself at a time lag of zero (<i>τ</i>=0). At all other lags, the correlation is zero. This results in an ACF that is a single impulse (a delta function).</p><div class="final-plot-container"><canvas id="final-acf-plot"></canvas></div></div>
+            <div class="explanation-section"><h4>3. The Power Spectral Density (PSD)</h4><p>The Fourier transform of an impulse function is a constant. This means that white noise has equal power at all frequencies. Its spectrum is completely flat.</p><div class="final-plot-container"><canvas id="final-psd-plot"></canvas></div></div>`
+    },
+    {
+        id: 'ar_process',
+        description: "A signal where the next value is a fraction of the previous value plus some new random noise. This creates a short-term 'memory' effect.",
+        correctEquation: { id: 'eq4', math: `<math><mi>X</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>=</mo><mi>α</mi><mo>⁢</mo><mi>X</mi><mo>[</mo><mi>n</mi><mo>-</mo><mn>1</mn><mo>]</mo><mo>+</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>]</mo></math>` },
+        distractorEquations: [
+            { id: 'eq3', math: `<math><mi>X</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>=</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>]</mo></math>`},
+            { id: 'eq2', math: `<math><mi>X</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>A</mi><mo>⁡</mo><mrow><mi>cos</mi><mo>⁡</mo><mrow><mo>(</mo><msub><mi>ω</mi><mn>0</mn></msub><mi>t</mi><mo>)</mo></mrow></mrow></math>` }
+        ],
+        acf: { id: 'acf_exponential', title: 'ACF: Exponential Decay', generator: (labels) => labels.map(tau => Math.pow(0.8, Math.abs(tau * 2))) },
+        psd: { id: 'psd_lowpass', title: 'PSD: Low-Pass Shape', generator: (labels) => labels.map(f => 1 / (1.2 - 0.8 * Math.cos(2 * Math.PI * f / 5))) },
+        explanation: `
+            <div class="explanation-section"><h4>1. The Equation</h4><p>This describes an Autoregressive (AR) process. The current value <i>X[n]</i> is a scaled version of the previous value <i>X[n-1]</i> (the "memory") plus a new white noise term <i>W[n]</i>.</p></div>
+            <div class="explanation-section"><h4>2. The Autocorrelation Function (ACF)</h4><p>Because of the memory, a sample is strongly correlated with recent samples, but this correlation decays over time as new random noise is added. This results in an ACF that is an exponentially decaying function. The "memory" does not last forever.</p><div class="final-plot-container"><canvas id="final-acf-plot"></canvas></div></div>
+            <div class="explanation-section"><h4>3. The Power Spectral Density (PSD)</h4><p>The Fourier transform of a two-sided exponential decay is a function with a low-pass characteristic. This means that the process has more power in its lower frequencies (slower changes) and less power in its higher frequencies (faster changes), which makes sense for a process with memory.</p><div class="final-plot-container"><canvas id="final-psd-plot"></canvas></div></div>`
+    },
+];
+
+// --------------------------------------
+// 3. State Management
+// --------------------------------------
+let currentProcess = null;
+let distractorPool = [];
+let selectedPlotId = null;
+let chartInstances = [];
+
+// --------------------------------------
+// 4. Core Logic
+// --------------------------------------
+function shuffle(array) {
+    return array.sort(() => Math.random() - 0.5);
 }
-FFT.prototype.forward = function(buffer) {
-  const size = this.size,
-        real = this.real,
-        imag = this.imag,
-        reverseTable = this.reverseTable;
-  for (let i = 0; i < size; i++) {
-    real[i] = buffer[reverseTable[i]];
-    imag[i] = 0;
-  }
-  let halfSize = 1, phaseShiftStepReal, phaseShiftStepImag, currentPhaseReal, currentPhaseImag, off, tr, ti, tmpReal;
-  while (halfSize < size) {
-    phaseShiftStepReal = this.cosTable[halfSize];
-    phaseShiftStepImag = this.sinTable[halfSize];
-    currentPhaseReal = 1;
-    currentPhaseImag = 0;
-    for (let fftStep = 0; fftStep < halfSize; fftStep++) {
-      let i = fftStep;
-      while (i < size) {
-        off = i + halfSize;
-        tr = (currentPhaseReal * real[off]) - (currentPhaseImag * imag[off]);
-        ti = (currentPhaseReal * imag[off]) + (currentPhaseImag * real[off]);
-        real[off] = real[i] - tr;
-        imag[off] = imag[i] - ti;
-        real[i] += tr;
-        imag[i] += ti;
-        i += halfSize << 1;
-      }
-      tmpReal = currentPhaseReal;
-      currentPhaseReal = (tmpReal * phaseShiftStepReal) - (currentPhaseImag * phaseShiftStepImag);
-      currentPhaseImag = (tmpReal * phaseShiftStepImag) + (currentPhaseImag * phaseShiftStepReal);
+
+function renderPlot(canvasElement, plotData, labels, title, axisLabel) {
+    if (!canvasElement) return;
+    const ctx = canvasElement.getContext('2d');
+    
+    // Destroy previous chart instance on this canvas if it exists
+    const existingChart = chartInstances.find(c => c.canvas === canvasElement);
+    if(existingChart) {
+        existingChart.destroy();
     }
-    halfSize = halfSize << 1;
-  }
-  for (let i = 0, N = size / 2; i < N; i++) {
-    this.spectrum[i] = (2 * Math.sqrt(real[i] * real[i] + imag[i] * imag[i])) / size;
-  }
-};
-// --- END of FFT Library ---
 
-
-// --------------------------------------
-// 1. DOM and Chart References
-// --------------------------------------
-const signalTypeSelector = document.getElementById('signal-type');
-const slidersContainer = document.getElementById('parameter-sliders');
-const observationsDiv = document.getElementById('observations');
-
-const signalChartCtx = document.getElementById('signalChart').getContext('2d');
-const acfChartCtx = document.getElementById('acfChart').getContext('2d');
-const psdChartCtx = document.getElementById('psdChart').getContext('2d');
-
-let signalChart, acfChart, psdChart;
-
-// --------------------------------------
-// 2. Configuration & State
-// --------------------------------------
-const N_POINTS = 1024; // More points for a cleaner signal
-const SAMPLE_RATE = 1024; // 1024 Hz, makes frequency calcs easy
-const ACF_MAX_LAG = 256;
-const FFT_SIZE = 1024; // Use a larger FFT size with zero-padding for smooth PSD
-let currentParams = {};
-
-const observationsText = {
-    sine: "<p>A pure sine wave has all its power concentrated at a single frequency. Notice the <strong>single sharp peak</strong> in the PSD plot. The ACF of a sine wave is a cosine wave at the <strong>same frequency</strong>. What happens to the PSD peak's location and height when you change the frequency and amplitude?</p>",
-    square: "<p>A square wave is composed of a fundamental frequency and its odd harmonics (3f, 5f, 7f...). Can you see these <strong>additional, smaller peaks</strong> in the PSD? Its ACF is a triangle wave, showing a different correlation structure than a sine wave.</p>",
-    noise: "<p>Ideal white noise has equal power at all frequencies, so its PSD should be flat. Its ACF is a single spike at lag \(\tau=0\), showing a sample is <strong>uncorrelated</strong> with all other samples. What happens to the overall power (height of the PSD) as you change the variance?</p>",
-    sum_sines: "<p>By adding two sine waves, the PSD clearly shows <strong>two separate peaks</strong>, one for each frequency component. The resulting ACF is more complex, representing the sum of two cosine waves, which creates a 'beating' pattern.</p>"
-};
-
-const fft = new FFT(FFT_SIZE, SAMPLE_RATE);
-
-// --------------------------------------
-// 3. Calculation Functions
-// --------------------------------------
-function calculateACF(data, maxLag) {
-    const N = data.length;
-    const acf = [];
-    if (N === 0) return acf;
-    for (let lag = 0; lag <= maxLag; lag++) {
-        let sum = 0;
-        for (let i = 0; i < N - lag; i++) {
-            sum += data[i] * data[i + lag];
+    const newChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{ data: plotData, borderColor: '#3273dc', borderWidth: 2.5, pointRadius: 0, fill: false, tension: 0.1 }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { title: { display: true, text: title, font: {size: 14} }, legend: { display: false } },
+            scales: { x: { title: { display: true, text: axisLabel } } }
         }
-        acf.push(sum / N); // Biased estimate for positive semi-definite result
-    }
-    return acf;
-}
-
-// ** CORRECTED and IMPROVED ** PSD Calculation using FFT
-function calculatePSD(acfData) {
-    // 1. Create the full, symmetric ACF needed for the transform
-    const symmetricAcf = [...acfData.slice(1).reverse(), ...acfData];
-    
-    // 2. Create a buffer and zero-pad it to the FFT_SIZE
-    const buffer = new Float32Array(FFT_SIZE).fill(0);
-    buffer.set(symmetricAcf); // Copies the ACF into the start of the buffer
-
-    // 3. Perform the FFT
-    fft.forward(buffer);
-    
-    // 4. Return the calculated spectrum (magnitudes)
-    return fft.spectrum;
-}
-
-// --------------------------------------
-// 4. Signal Generation
-// --------------------------------------
-function generateSignal() {
-    const type = signalTypeSelector.value;
-    const t = Array.from({ length: N_POINTS }, (_, i) => i / SAMPLE_RATE);
-
-    switch (type) {
-        case 'sine':
-            const { amp, freq } = currentParams;
-            return t.map(ti => amp * Math.sin(2 * Math.PI * freq * ti));
-        case 'square':
-            const { amp: sq_amp, freq: sq_freq } = currentParams;
-            return t.map(ti => sq_amp * Math.sign(Math.sin(2 * Math.PI * sq_freq * ti)));
-        case 'noise':
-            const { variance } = currentParams;
-            const stdDev = Math.sqrt(variance);
-            return Array.from({ length: N_POINTS }, () => (Math.random() - 0.5) * 2 * stdDev);
-        case 'sum_sines':
-            const { amp1, freq1, amp2, freq2 } = currentParams;
-            return t.map(ti => amp1 * Math.sin(2 * Math.PI * freq1 * ti) + amp2 * Math.sin(2 * Math.PI * freq2 * ti));
-    }
-    return new Array(N_POINTS).fill(0);
-}
-
-// --------------------------------------
-// 5. UI and Plotting
-// --------------------------------------
-function createSlider(id, label, min, max, value, step) {
-    const container = document.createElement('div');
-    container.className = 'slider-container';
-    const sliderLabel = document.createElement('label');
-    sliderLabel.innerHTML = `${label}: <span id="${id}-value" class="slider-value">${value}</span>`;
-    const slider = document.createElement('input');
-    slider.type = 'range'; slider.id = id; slider.min = min; slider.max = max; slider.value = value; slider.step = step;
-    slider.addEventListener('input', (e) => {
-        currentParams[id] = parseFloat(e.target.value);
-        document.getElementById(`${id}-value`).textContent = e.target.value;
-        updatePlots();
     });
-    container.appendChild(sliderLabel);
-    container.appendChild(slider);
-    return container;
+    chartInstances.push(newChart);
 }
 
-function setupControls() {
-    slidersContainer.innerHTML = '';
-    const type = signalTypeSelector.value;
-    currentParams = {};
-
-    switch (type) {
-        case 'sine':
-            slidersContainer.appendChild(createSlider('amp', 'Amplitude', 0.5, 5, 2, 0.1));
-            slidersContainer.appendChild(createSlider('freq', 'Frequency (Hz)', 5, 100, 30, 1));
-            break;
-        case 'square':
-            slidersContainer.appendChild(createSlider('amp', 'Amplitude', 0.5, 5, 2, 0.1));
-            slidersContainer.appendChild(createSlider('freq', 'Frequency (Hz)', 5, 100, 20, 1));
-            break;
-        case 'noise':
-            slidersContainer.appendChild(createSlider('variance', 'Variance', 0.1, 5, 1, 0.1));
-            break;
-        case 'sum_sines':
-            slidersContainer.appendChild(createSlider('amp1', 'Amplitude 1', 0.5, 5, 2, 0.1));
-            slidersContainer.appendChild(createSlider('freq1', 'Frequency 1 (Hz)', 5, 100, 30, 1));
-            slidersContainer.appendChild(createSlider('amp2', 'Amplitude 2', 0.5, 5, 1.5, 0.1));
-            slidersContainer.appendChild(createSlider('freq2', 'Frequency 2 (Hz)', 5, 100, 70, 1));
-            break;
-    }
-    
-    Array.from(slidersContainer.querySelectorAll('input')).forEach(slider => {
-        currentParams[slider.id] = parseFloat(slider.value);
+function setupTask1() {
+    processDescription.textContent = currentProcess.description;
+    const options = shuffle([currentProcess.correctEquation, ...currentProcess.distractorEquations]);
+    equationOptionsContainer.innerHTML = '';
+    options.forEach(eq => {
+        const div = document.createElement('div');
+        div.className = 'equation-option';
+        div.innerHTML = `<input type="radio" name="equation-choice" value="${eq.id}" id="radio-${eq.id}"><label for="radio-${eq.id}">${eq.math}</label>`;
+        equationOptionsContainer.appendChild(div);
     });
-    observationsDiv.innerHTML = observationsText[type];
-    updatePlots();
 }
 
-function updatePlots() {
-    const signalData = generateSignal();
-    const acfData = calculateACF(signalData, ACF_MAX_LAG);
-    const psdData = calculatePSD(acfData);
+function setupPlots(container, plots, axisLabel) {
+    container.innerHTML = '';
+    selectedPlotId = null;
+    const labels = axisLabel === 'Lag (τ)' ? 
+                   Array.from({length: 101}, (_, i) => ((i - 50) / 10).toFixed(1)) : // -5 to 5
+                   Array.from({length: 101}, (_, i) => ((i - 50) / 25).toFixed(1)); // -2 to 2
 
-    signalChart.data.labels = signalData.map((_, i) => (i / SAMPLE_RATE).toFixed(3));
-    signalChart.data.datasets[0].data = signalData;
-    signalChart.update('none');
-
-    acfChart.data.labels = acfData.map((_, i) => i);
-    acfChart.data.datasets[0].data = acfData;
-    acfChart.update('none');
-
-    const freqAxis = psdData.map((_, i) => fft.getFrequency(i));
-    psdChart.data.labels = freqAxis;
-    psdChart.data.datasets[0].data = psdData;
-    psdChart.options.scales.x.max = SAMPLE_RATE / 4; // Zoom in on the interesting part
-    psdChart.update('none');
+    plots.forEach(plot => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'plot-wrapper';
+        wrapper.dataset.plotId = plot.id;
+        const canvas = document.createElement('canvas');
+        wrapper.appendChild(canvas);
+        
+        wrapper.onclick = () => {
+            document.querySelectorAll(`#${container.id} .plot-wrapper`).forEach(w => w.classList.remove('selected'));
+            wrapper.classList.add('selected');
+            selectedPlotId = plot.id;
+        };
+        container.appendChild(wrapper);
+        // **CRITICAL FIX**: Use setTimeout to allow the DOM to update before rendering.
+        setTimeout(() => {
+            renderPlot(canvas, plot.generator(labels), labels, plot.title, axisLabel);
+        }, 0);
+    });
 }
 
-function initializeCharts() {
-    const commonOptions = {
-        responsive: true, maintainAspectRatio: false, animation: false,
-        plugins: { legend: { display: false } },
-        scales: { x: { ticks: { maxTicksLimit: 8, font: { size: 10 } } } }
-    };
-    signalChart = new Chart(signalChartCtx, { type: 'line', data: { datasets: [{ data: [], borderColor: '#3273dc', borderWidth: 1.5, pointRadius: 0 }] }, options: { ...commonOptions, scales: { ...commonOptions.scales, x: {...commonOptions.scales.x, title:{display:true, text:'Time (s)'}}}} });
-    acfChart = new Chart(acfChartCtx, { type: 'line', data: { datasets: [{ data: [], borderColor: '#23d160', borderWidth: 1.5, pointRadius: 0, fill:true, backgroundColor:'#d4f8de' }] }, options: { ...commonOptions, scales: { ...commonOptions.scales, x: {...commonOptions.scales.x, title:{display:true, text:'Lag (τ)'}}}} });
-    psdChart = new Chart(psdChartCtx, { type: 'bar', data: { datasets: [{ data: [], backgroundColor: '#ff3860', barPercentage: 1.1 }] }, options: { ...commonOptions, scales: { ...commonOptions.scales, x: {...commonOptions.scales.x, title:{display:true, text:'Frequency (Hz)'}}}} });
+function setupTask2() {
+    const correctPlot = currentProcess.acf;
+    const distractorPlots = distractorPool.map(p => p.acf).filter(p => p.id !== correctPlot.id);
+    const plotOptions = shuffle([correctPlot, ...distractorPlots.slice(0, 2)]);
+    setupPlots(acfPlotsContainer, plotOptions, 'Lag (τ)');
 }
 
-FFT.prototype.getFrequency = function(index) {
-  return index * this.sampleRate / this.size;
+function setupTask3() {
+    const correctPlot = currentProcess.psd;
+    const distractorPlots = distractorPool.map(p => p.psd).filter(p => p.id !== correctPlot.id);
+    const plotOptions = shuffle([correctPlot, ...distractorPlots.slice(0, 2)]);
+    setupPlots(psdPlotsContainer, plotOptions, 'Frequency (f)');
+}
+
+function setupTask4() {
+    finalExplanationContent.innerHTML = currentProcess.explanation;
+    // **CRITICAL FIX**: Defer rendering until after innerHTML has been processed.
+    setTimeout(() => {
+        const lagLabels = Array.from({length: 101}, (_, i) => ((i - 50) / 10).toFixed(1));
+        const freqLabels = Array.from({length: 101}, (_, i) => ((i - 50) / 25).toFixed(1));
+        const finalAcfCanvas = document.getElementById('final-acf-plot');
+        const finalPsdCanvas = document.getElementById('final-psd-plot');
+        renderPlot(finalAcfCanvas, currentProcess.acf.generator(lagLabels), lagLabels, `Correct ACF: ${currentProcess.acf.title}`, 'Lag (τ)');
+        renderPlot(finalPsdCanvas, currentProcess.psd.generator(freqLabels), freqLabels, `Correct PSD: ${currentProcess.psd.title}`, 'Frequency (f)');
+    }, 0);
+}
+
+function showFeedback(feedbackEl, isCorrect) {
+    feedbackEl.style.display = 'block';
+    feedbackEl.textContent = isCorrect ? 'Correct!' : 'Not quite, try again.';
+    feedbackEl.className = `feedback-message ${isCorrect ? 'correct' : 'incorrect'}`;
+}
+
+function startExperiment() {
+    chartInstances.forEach(chart => chart.destroy());
+    chartInstances = [];
+    [task1Panel, task2Panel, task3Panel, task4Panel].forEach(p => p.style.display = 'none');
+    [feedback1, feedback2, feedback3].forEach(f => { f.style.display = 'none'; f.className = 'feedback-message'; });
+
+    const otherProcesses = processDatabase.filter(p => p.id !== (currentProcess ? currentProcess.id : ''));
+    currentProcess = otherProcesses[Math.floor(Math.random() * otherProcesses.length)];
+    distractorPool = processDatabase.filter(p => p.id !== currentProcess.id);
+    
+    setupTask1();
+    task1Panel.style.display = 'block';
 }
 
 // --------------------------------------
-// 6. Event Listeners & Initialization
+// 5. Event Listeners
 // --------------------------------------
-signalTypeSelector.addEventListener('change', setupControls);
-window.addEventListener('load', () => {
-    initializeCharts();
-    setupControls();
+function handleSubmission(btn, feedbackEl, isCorrect, nextStepFn) {
+    if (isCorrect) {
+        btn.disabled = true;
+        setTimeout(() => {
+            btn.parentElement.parentElement.style.display = 'none';
+            nextStepFn();
+            btn.disabled = false;
+        }, 1200);
+    }
+}
+
+submitTask1Btn.addEventListener('click', () => {
+    const selected = document.querySelector('input[name="equation-choice"]:checked');
+    if (!selected) { alert("Please select an equation."); return; }
+    const isCorrect = selected.value === currentProcess.correctEquation.id;
+    showFeedback(feedback1, isCorrect);
+    handleSubmission(submitTask1Btn, feedback1, isCorrect, () => {
+        task2Panel.style.display = 'block';
+        setupTask2();
+    });
 });
+
+submitTask2Btn.addEventListener('click', () => {
+    if (!selectedPlotId) { alert("Please select a plot."); return; }
+    const isCorrect = selectedPlotId === currentProcess.acf.id;
+    showFeedback(feedback2, isCorrect);
+    handleSubmission(submitTask2Btn, feedback2, isCorrect, () => {
+        task3Panel.style.display = 'block';
+        setupTask3();
+    });
+});
+
+submitTask3Btn.addEventListener('click', () => {
+    if (!selectedPlotId) { alert("Please select a plot."); return; }
+    const isCorrect = selectedPlotId === currentProcess.psd.id;
+    showFeedback(feedback3, isCorrect);
+    handleSubmission(submitTask3Btn, feedback3, isCorrect, () => {
+        task4Panel.style.display = 'block';
+        setupTask4();
+    });
+});
+
+restartBtn.addEventListener('click', startExperiment);
+window.addEventListener('load', startExperiment);

@@ -99,6 +99,14 @@ body {
     color: #cc0f35;
     display: block;
 }
+/* ADDED for "Partially Correct" answers */
+#submission-feedback.partial {
+    background-color: #fffaf5;
+    border: 2px solid #ffae42;
+    color: #cc8400;
+    display: block;
+}
+
 
 /* Explanation Panel */
 #explanation-panel {
