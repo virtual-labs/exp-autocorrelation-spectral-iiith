@@ -1,70 +1,61 @@
 
 ### Procedure
 
-#### **Identifying Valid Autocorrelation Functions**
+This section outlines the procedure for the three sub-experiments on Autocorrelation and Stationary Processes.
 
-This experiment helps us **identify functions that can serve as valid Autocorrelation Functions (ACFs)** by analyzing their mathematical properties. Not every function qualifies as an ACF. A valid ACF must satisfy the following key conditions:
+#### Sub Experiment 1: Identifying a Valid Autocorrelation Function
 
-- **Symmetry**: Rₓₓ(τ) = Rₓₓ(–τ)
-- **Maximum at Zero**: Rₓₓ(0) ≥ Rₓₓ(τ) for all τ
-- **Non-negative Power Spectrum**: The Fourier Transform (PSD) of a valid ACF must be non-negative
+This experiment challenges you to identify valid Autocorrelation Functions (ACFs) from a set of graphs based on their fundamental mathematical properties.
 
-Your task is to:
-
-1. **Observe different candidate functions** and analyze whether they are symmetric and peak at τ = 0.
-2. **Check for positive definiteness** — some invalid ACFs may "look" symmetric but still violate PSD non-negativity.
-3. **Use examples and counterexamples** — for instance, a shifted Gaussian or a signal oscillating with (–1)^⌊τ⌋ may violate symmetry or positive definiteness.
-4. **Justify** whether the function could represent the autocorrelation of a real process, based on theoretical principles and visual evidence.
-
----
-
-#### **Stationary and WSS Process Detection**
-
-This experiment helps you **differentiate between Stationary, Wide-Sense Stationary (WSS), and Non-Stationary processes** using an interactive signal inspector. You analyze real-time properties of a signal by sliding an **"inspector window"** across a long time-series realization.
-
-The mystery signals to analyze include:
-
-- **Signal A (WSS)**: A noisy sine wave with constant amplitude.
-- **Signal B (Non-Stationary Mean)**: A signal with slowly varying mean (e.g., sine wave over ramp).
-- **Signal C (Non-Stationary ACF)**: A signal with time-varying variance (e.g., modulated noise).
-
-Your task is to:
-
-1. **Select a mystery signal** and observe the waveform.
-2. **Use the draggable inspector window** to explore the local statistics across time.
-3. **Examine Local Mean (Plot 1)**: A running average calculated in the window. If the mean changes with time, the process is not WSS.
-4. **Examine Local ACF (Plot 2)**: Check whether the autocorrelation changes as you move the window.
-5. **Conclude the nature of the signal**:
-   - If both mean and ACF are time-invariant → **WSS**
-   - If either changes → **Non-stationary**
+**Procedure:**
+1.  Press the **"Generate New Problem"** button to begin. This will display four different graphs.
+2.  Carefully analyze each of the four functions. Check if they satisfy the required properties of an ACF:
+    *   Is the function symmetric about the y-axis (τ=0)?
+    *   Does the function have its maximum absolute value at the origin (τ=0)?
+3.  Click on the single graph that you believe represents a **valid** ACF.
+4.  The **Observations** panel will provide immediate feedback.
+    *   If you are correct, it will confirm your choice.
+    *   If you are incorrect, it will explain why your selection was invalid and highlight the correct graph, explaining why it satisfies the ACF properties.
+5.  Press "Generate New Problem" to try again with a new set of functions.
 
 ---
 
-#### **Autocorrelation and Power Spectral Density Relationship**
+#### Sub Experiment 2: Identifying Stationary Processes by Definition
 
-This experiment visually demonstrates the fundamental relationship between **Autocorrelation Function (ACF)** and **Power Spectral Density (PSD)**, linked by the **Wiener–Khinchin Theorem**:
+This experiment tests your ability to classify a random process as Strict-Sense Stationary (SSS), Wide-Sense Stationary (WSS), or Non-Stationary based on its mathematical equation.
 
-Sₓₓ(f) = 𝔽 { Rₓₓ(τ) }
+**Procedure:**
+1.  Select a **"Mystery Process"** from the buttons at the top to load a problem.
+2.  The panel will display the mathematical **equation** for the random process `X(t)` or `X[n]`, along with definitions for all its variables (e.g., constants, random variables).
+3.  Analyze the equation and the properties of its components to determine the process's stationarity.
+    *   Does the mean depend on time?
+    *   Does the autocorrelation depend on absolute time or only the time lag?
+    *   Are the underlying random variables Independent and Identically Distributed (IID)?
+4.  Select your answer (SSS, WSS, or Non-Stationary) from the dropdown menu.
+5.  Press the **"Submit Answer"** button.
+6.  A detailed explanation will appear, providing a conceptual and mathematical proof for the correct classification. It will also show plots of sample realizations and the relevant statistical property (e.g., ACF, mean) to visually support the analysis.
 
-Where Sₓₓ(f) is the PSD and Rₓₓ(τ) is the autocorrelation function.
+---
 
-You interactively analyze this using different signal types:
+#### Sub Experiment 3: Connecting Process Descriptions to Plots
 
-- **Sine Wave**
-- **Square Wave**
-- **White Noise**
-- **Sum of Two Sines**
+This experiment builds a complete picture by asking you to connect a physical description of a random process to its mathematical model, its Autocorrelation Function (ACF), and its Power Spectral Density (PSD).
 
-Your task is to:
+**Procedure:**
+This is a multi-step experiment. You must answer each step correctly to proceed to the next.
 
-1. **Select a base signal** using the dropdown menu.
-2. **Control signal parameters** using sliders (e.g., frequency, amplitude, variance).
-3. **Observe the signal waveform (Top Plot)**: View the signal x(t) in the time domain.
-4. **Observe the ACF (Bottom-Left Plot)**:
-   - Is it periodic (e.g., sine)?
-   - Is it impulsive (e.g., white noise)?
-5. **Observe the PSD (Bottom-Right Plot)**:
-   - Narrow peaks ↔ periodic signals (pure tones)
-   - Flat spectrum ↔ white noise
-6. **Understand how changes in the signal** (e.g., increasing variance or frequency) affect both ACF and PSD simultaneously.
-7. **Correlate time and frequency domains**: See how time-localized features (like randomness) produce frequency-spread PSDs, and how periodicity in time gives rise to sharp peaks in frequency.
+1.  A **Process Description** of a physical random process (e.g., white noise, a pure tone) is displayed.
+2.  **Step 1: Infer the Process Equation**
+    *   From the list of radio buttons, select the mathematical equation that best models the given description.
+    *   Click **"Submit Answer"**.
+3.  **Step 2: Identify the Autocorrelation Function (ACF)**
+    *   Once the equation is correct, you will be shown three different ACF plots.
+    *   Click on the plot that you believe corresponds to the process.
+    *   Click **"Submit Answer"**.
+4.  **Step 3: Identify the Power Spectral Density (PSD)**
+    *   Once the ACF is correct, you will be shown three different PSD plots.
+    *   Click on the plot that corresponds to the process and its ACF.
+    *   Click **"Submit Answer"**.
+5.  **Step 4: Observation & Analysis**
+    *   After completing all steps, a final panel will provide a comprehensive explanation detailing the connections between the description, equation, ACF, and PSD, complete with plots.
+6.  Click the **"Start New Process"** button to try again with a different random process.
