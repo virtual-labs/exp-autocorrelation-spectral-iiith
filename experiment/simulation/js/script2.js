@@ -28,11 +28,11 @@ const processDefinitions = {
             </ul>`,
             explanation: `
                 <p><strong>This is a Strict-Sense Stationary (SSS) process.</strong></p>
-                <h4>SSS Proof (Conceptual):</h4>
+                <h4>SSS Proof:</h4>
                 <p>For a process to be SSS, its joint probability distribution must be invariant to time shifts. Let's analyze the process after a time shift <i>ε</i>:
                 <br><math style="display: block; margin-top: 1rem;"><mi>X</mi><mo>(</mo><mi>t</mi><mo>+</mo><mi>ε</mi><mo>)</mo><mo>=</mo><mi>A</mi><mo>⁡</mo><mrow><mi>cos</mi><mo>⁡</mo><mrow><mo>(</mo><mn>2</mn><mi>π</mi><msub><mi>f</mi><mn>0</mn></msub><mo>(</mo><mi>t</mi><mo>+</mo><mi>ε</mi><mo>)</mo><mo>+</mo><mi>Θ</mi><mo>)</mo></mrow></mrow><mo>=</mo><mi>A</mi><mo>⁡</mo><mrow><mi>cos</mi><mo>⁡</mo><mrow><mo>(</mo><mn>2</mn><mi>π</mi><msub><mi>f</mi><mn>0</mn></msub><mi>t</mi><mo>+</mo><mo>(</mo><mi>Θ</mi><mo>+</mo><mn>2</mn><mi>π</mi><msub><mi>f</mi><mn>0</mn></msub><mi>ε</mi><mo>)</mo><mo>)</mo></mrow></mrow></math></p>
                 <p>Let <math><msup><mi>Θ</mi><mo>′</mo></msup><mo>=</mo><mo>(</mo><mi>Θ</mi><mo>+</mo><mn>2</mn><mi>π</mi><msub><mi>f</mi><mn>0</mn></msub><mi>ε</mi><mo>)</mo><mo> mod </mo><mn>2</mn><mi>π</mi></math>. Since <i>Θ</i> is a random variable uniformly distributed over a full cycle [0, 2π], shifting it by a constant amount and taking the modulo does not change its probability distribution. The distribution of <i>Θ'</i> is identical to the distribution of <i>Θ</i>. Because all statistical properties of the process are derived from this single random variable, and its distribution is unaffected by a time shift, the process is SSS.</p>
-                <h4>WSS Proof (Mathematical):</h4>
+                <h4>WSS Proof:</h4>
                 <p>Since the process is SSS, it must also be WSS.
                 <br><strong>Mean:</strong> <math><mi>E</mi><mo>[</mo><mi>X</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>]</mo><mo>=</mo><mn>0</mn></math>. (Constant)</p>
                 <p><strong>Autocorrelation:</strong> <math><msub><mi>R</mi><mrow><mi>X</mi><mi>X</mi></mrow></msub><mo>(</mo><mi>τ</mi><mo>)</mo><mo>=</mo><mfrac><msup><mi>A</mi><mn>2</mn></msup><mn>2</mn></mfrac><mi>cos</mi><mo>(</mo><mn>2</mn><mi>π</mi><msub><mi>f</mi><mn>0</mn></msub><mi>τ</mi><mo>)</mo></math>, which only depends on the time lag τ.</p>`,
@@ -48,14 +48,14 @@ const processDefinitions = {
             </ul>`,
             explanation: `
                 <p><strong>This is a Strict-Sense Stationary (SSS) process by definition.</strong></p>
-                <h4>SSS Proof (Conceptual):</h4>
+                <h4>SSS Proof:</h4>
                 <p>The term <strong>Independent and Identically Distributed</strong> provides the proof directly:</p>
                 <ul style="list-style: disc; margin-left: 20px;">
                     <li><strong>Identically Distributed:</strong> The probability distribution of any single sample <i>X[n]</i> is the same, regardless of the time index <i>n</i>.</li>
                     <li><strong>Independent:</strong> The joint probability distribution of any set of samples is the product of their individual distributions.</li>
                 </ul>
                 <p>Consider a set of samples at times <math><msub><mi>n</mi><mn>1</mn></msub><mo>,</mo><mo>...</mo><mo>,</mo><msub><mi>n</mi><mi>k</mi></msub></math>. Their joint Probability Density Function is <math><mi>f</mi><mo>(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mo>...</mo><mo>,</mo><msub><mi>x</mi><mi>k</mi></msub><mo>)</mo><mo>=</mo><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>k</mi></munderover><msub><mi>f</mi><mi>W</mi></msub><mo>(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>)</mo></math>. If we shift all time indices by <i>m</i>, the new set of samples is still Independent and Identically Distributed, so its joint Probability Density Function is identical. This directly satisfies the condition for SSS.</p>
-                <h4>WSS Proof (Mathematical):</h4>
+                <h4>WSS Proof:</h4>
                 <p><strong>Mean:</strong> <math><mi>E</mi><mo>[</mo><mi>X</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>]</mo><mo>=</mo><mi>E</mi><mo>[</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>]</mo><mo>=</mo><mn>0</mn></math>. (Constant)</p>
                 <p><strong>Autocorrelation:</strong> <math><msub><mi>R</mi><mrow><mi>X</mi><mi>X</mi></mrow></msub><mo>[</mo><mi>k</mi><mo>]</mo><mo>=</mo><mi>E</mi><mo>[</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>]</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>-</mo><mi>k</mi><mo>]</mo><mo>]</mo><mo>=</mo><msup><mi>σ</mi><mn>2</mn></msup><mi>δ</mi><mo>[</mo><mi>k</mi><mo>]</mo></math>. This only depends on the lag <i>k</i>, not on time <i>n</i>.</p>`,
             sampleGenerator: () => (Math.random() - 0.5) * 2,
@@ -282,11 +282,32 @@ function handleSubmit() {
     submissionFeedback.className = feedbackClass;
     submissionFeedback.style.display = 'block';
 
-    explanationContent.innerHTML = currentProcess.explanation;
-    explanationPanel.style.display = 'block';
-    renderPlots(currentProcess); 
-}
+    // --- CHANGED SECTION START ---
 
+    // 1. ADDED: Create a recap of the problem definition for context.
+    const recapHTML = `
+        <h4 class="v-datalist-subtitle" style="margin-bottom: 1rem;">The Process Under Review</h4>
+        <div class="equation-box">${currentProcess.equation}</div>
+        <hr style="margin: 1.5rem 0;" />
+    `;
+
+    // 2. MODIFIED: Prepend the recap to the detailed explanation.
+    explanationContent.innerHTML = recapHTML + currentProcess.explanation;
+    explanationPanel.style.display = 'block';
+
+    // Render the plots for the explanation
+    renderPlots(currentProcess);
+
+    // 3. ADDED: Tell MathJax to typeset the new content in the explanation panel.
+    // This is crucial for rendering the dynamically added equations.
+    if (window.MathJax) {
+        MathJax.typesetPromise([explanationPanel]).catch(function (err) {
+            console.log('MathJax error: ', err);
+        });
+    }
+    
+    // --- CHANGED SECTION END ---
+}
 
 window.addEventListener('load', () => {
     // --- UPDATED LOGIC ---

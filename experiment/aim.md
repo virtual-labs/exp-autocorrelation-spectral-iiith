@@ -4,6 +4,4 @@ To help students develop an intuitive understanding of **Wide-Sense Stationary (
 
 - Distinguish between **stationary** and **wide-sense stationary** random processes.
 - Visualize the **autocorrelation function** as a function of time-lag (τ) in WSS processes.
-- Understand the **physical significance** of autocorrelation in capturing second-order dependencies.
 - Demonstrate how the **power spectral density** is obtained as the Fourier Transform of the autocorrelation function.
-- Provide an **interactive platform** to bridge the gap between theory and visual understanding of random processes.

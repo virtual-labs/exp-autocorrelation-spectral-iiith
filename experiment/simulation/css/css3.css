@@ -158,3 +158,65 @@ body {
     min-height: 250px; /* Added for Chart.js */
     margin: 1rem auto;
 }
+
+.recap-box {
+    background-color: #f5f5f5;
+    border: 1px solid #dbdbdb;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.recap-box h4 {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #363636;
+    margin-bottom: 0.75rem;
+}
+
+.recap-box .equation-box {
+    font-size: 1.25em;
+    padding: 0.5rem;
+    background: white;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.recap-grid {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.recap-grid > div {
+    flex-basis: 50%;
+}
+
+.recap-plot-container {
+    height: 150px;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+/* Other styles from original file */
+.task-panel { margin-bottom: 2rem; }
+.task-title { font-size: 1.75rem; text-align: center; margin-bottom: 1.5rem; font-weight: 600; }
+.description-box { background-color: #f5f5f5; padding: 1.5rem; border-radius: 6px; margin-bottom: 1.5rem; }
+.options-container { display: flex; flex-direction: column; gap: 1rem; align-items: center; margin-bottom: 1.5rem; }
+.equation-option { display: block; width: 80%; max-width: 600px; }
+.equation-option label { display: flex; align-items: center; justify-content: center; padding: 1rem; border: 1px solid #dbdbdb; border-radius: 4px; cursor: pointer; background-color: white; }
+.equation-option input[type="radio"] { display: none; }
+.equation-option input[type="radio"]:checked + label { border-color: #3273dc; box-shadow: 0 0 10px rgba(50, 115, 220, 0.2); background-color: #eff5fb; }
+.submit-container { text-align: center; margin-top: 1rem; }
+.feedback-message { margin-top: 1rem; font-weight: bold; }
+.feedback-message.correct { color: #23d160; }
+.feedback-message.incorrect { color: #ff3860; }
+.task-prompt { text-align: center; margin-bottom: 1.5rem; font-size: 1.1em; }
+.plots-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+.plot-wrapper { border: 2px solid transparent; border-radius: 6px; padding: 0.5rem; cursor: pointer; background-color: white; }
+.plot-wrapper.selected { border-color: #3273dc; }
+.explanation-section { margin-bottom: 2rem; }
+.final-plot-container { height: 250px; margin-top: 1rem; }

@@ -13,20 +13,23 @@ const graphData = {
     { src: 'images/correct_gaussian.png', property: 'correct', explanation: 'VALID: This Gaussian function is symmetric, and its maximum value occurs at τ=0.' },
     { src: 'images/correct_exponential.png', property: 'correct', explanation: 'VALID: This exponential decay function is symmetric and has its maximum value at τ=0.' },
     { src: 'images/correct_triangular.png', property: 'correct', explanation: 'VALID: This triangular function satisfies all properties.' },
-    { src: 'images/correct_sinc.png', property: 'correct', explanation: 'VALID: The Sinc function is a valid ACF, as its Fourier transform is a non-negative rectangular pulse.' }
+    { src: 'images/correct_sinc.png', property: 'correct', explanation: 'VALID: The Sinc function is a valid ACF, as its Fourier transform is a non-negative rectangular pulse.' },
+    // MOVED AND CORRECTED: The cosine function is a valid ACF.
+    { src: 'images/error_shape_cosine.png', property: 'correct', explanation: 'VALID: A cosine function is a valid ACF. It corresponds to a purely periodic process and has a non-negative Fourier transform.' }
   ],
   incorrect: [
     // Violates Symmetry
     { src: 'images/error_symmetry_onesided.png', property: 'violatesSymmetry', explanation: 'INVALID: This function is not symmetric. A valid ACF must be an even function.' },
     { src: 'images/error_symmetry_shifted.png', property: 'violatesSymmetry', explanation: 'INVALID: This function lacks symmetry about the y-axis.' },
     { src: 'images/error_symmetry_ramp.png', property: 'violatesSymmetry', explanation: 'INVALID: This ramp function is not an even function.' },
-    { src: 'images/error_shape_sine.png', property: 'violatesShape', explanation: 'INVALID: A sine wave is an odd function, not an even function, so it violates the symmetry property.' },
+    // NOTE: The sine wave is correctly identified as invalid due to being an odd function.
+    { src: 'images/error_shape_sine.png', property: 'violatesSymmetry', explanation: 'INVALID: A sine wave is an odd function, not an even function, so it violates the symmetry property.' },
     // Violates Max Lag
     { src: 'images/error_maxlag_twinpeaks.png', property: 'violatesMaxLag', explanation: 'INVALID: The maximum value is not at the origin (τ=0).' },
     { src: 'images/error_maxlag_dip.png', property: 'violatesMaxLag', explanation: 'INVALID: This function has a dip at τ=0, violating the max-at-origin rule.' },
     // Violates Shape / PSD Property
-    { src: 'images/error_shape_rectangle.png', property: 'violatesShape', explanation: 'INVALID: A rectangular function is not a valid ACF as its Fourier Transform (a Sinc function) has negative values.' },
-    { src: 'images/error_shape_cosine.png', property: 'violatesShape', explanation: 'INVALID: A non-decaying cosine is the ACF of a deterministic sinusoid, not a general WSS random process.' }
+    { src: 'images/error_shape_rectangle.png', property: 'violatesShape', explanation: 'INVALID: A rectangular function is not a valid ACF as its Fourier Transform (a Sinc function) has negative values.' }
+    // REMOVED from here: { src: 'images/error_shape_cosine.png', ... }
   ]
 };
 

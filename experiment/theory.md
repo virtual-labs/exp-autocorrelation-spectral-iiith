@@ -1,50 +1,164 @@
-### Autocorrelation Function (ACF)
+## **Autocorrelation Function (ACF)**
 
-The Autocorrelation Function (ACF), denoted `R(τ)`, describes the correlation of a signal with a delayed (or time-shifted) copy of itself as a function of the delay `τ`. It is a powerful tool that reveals the internal "memory" or repetitive structure of a random process.
+The **Autocorrelation Function (ACF)**, denoted $ R_X(\tau) $ quantifies how a random process $ X(t) $ correlates with a time-shifted version of itself:
 
-For a function to be a valid ACF of a real-valued Wide-Sense Stationary process, it must satisfy several key properties:
+$$
+R_X(\tau) = \mathbb{E}[X(t) \, X(t + \tau)]
+$$
 
-1.  **Maximum at Zero Lag:** The value of the ACF at the origin must be its maximum absolute value. This means the process is most correlated with itself at no time delay.
-    *   Mathematically: `|R(τ)| ≤ R(0)` for all `τ`.
+If the process has a non-zero mean $\mu_X = \mathbb{E}[X(t)] $, then:
 
-2.  **Even Symmetry:** The ACF must be an even function, meaning it is perfectly symmetric about the vertical axis. The correlation at a positive lag `τ` is the same as at a negative lag `-τ`.
-    *   Mathematically: `R(τ) = R(-τ)`.
+$$
+C_X(\tau) = \mathbb{E}[(X(t) - \mu_X)(X(t + \tau) - \mu_X)] = R_X(\tau) - \mu_X^2
+$$
 
-3.  **Non-Negative Power Spectrum:** The Fourier transform of a valid ACF, known as the Power Spectral Density (PSD), must be non-negative for all frequencies. This property is less obvious visually but excludes functions with certain shapes (like a perfect rectangle) whose transforms have negative lobes.
+#### **Key Properties of a Valid ACF (for a real-valued WSS process):**
+
+1. **Maximum at Zero Lag:**
+
+   $$
+   |R_X(\tau)| \le R_X(0)
+   $$
+2. **Even Symmetry:**
+
+   $$
+   R_X(\tau) = R_X(-\tau)
+   $$
+3. **Non-Negative Power Spectrum:**
+
+   $$
+   S_X(f) \ge 0 \quad \forall f
+   $$
 
 ---
 
-### Power Spectral Density (PSD)
+## **Power Spectral Density (PSD)**
 
-The Power Spectral Density (PSD), denoted `S(f)`, describes how the power of a signal is distributed across the different frequencies that compose it. It reveals the frequency content of the process.
+The **Power Spectral Density (PSD)** describes how the power of a random process is distributed over frequency.
 
-*   A process with a periodic or repetitive structure in time (like a sine wave) will have a PSD with sharp peaks at specific frequencies.
-*   A process with no "memory" where each sample is random (like white noise) will have a flat PSD, indicating that its power is spread evenly across all frequencies.
+Defined as:
+
+$$
+S_X(f) = \int_{-\infty}^{\infty} R_X(\tau) e^{-j 2\pi f \tau} \, d\tau
+$$
+
+Inverse relation:
+
+$$
+R_X(\tau) = \int_{-\infty}^{\infty} S_X(f) e^{j 2\pi f \tau} \, df
+$$
 
 ---
 
-### The Wiener-Khinchin Theorem
+## **The Wiener–Khinchin Theorem**
 
-The ACF and PSD are fundamentally linked through the **Wiener-Khinchin Theorem**. This theorem states that the **Power Spectral Density is the Fourier transform of the Autocorrelation Function**.
-
-*   Mathematically: `S(f) = ℱ{R(τ)}`
-
-This relationship is crucial because it connects the time-domain characteristics (correlation and memory, described by the ACF) to the frequency-domain characteristics (power distribution, described by the PSD).
+$$
+\boxed{S_X(f) = \mathcal{F}\{R_X(\tau)\}} \quad \text{and} \quad \boxed{R_X(\tau) = \mathcal{F}^{-1}\{S_X(f)\}}
+$$
 
 ---
 
-### Stationarity
+## **Stationarity**
 
-A random process is defined by its statistical properties over time. Stationarity is a key classification that describes whether these properties are time-invariant.
+**Stationarity** describes how the statistical properties of a random process behave over time.
+It tells us whether the process’s behavior is consistent (time-invariant) or whether it changes (time-varying).
 
-1.  **Strict-Sense Stationary (SSS):** This is the strongest form of stationarity. A process is SSS if the joint probability distribution of any set of its samples is invariant with respect to a shift in time. In simple terms, the process's statistical "character" is identical at all points in time.
+A random process \( X(t) \) is said to be **stationary** if its statistical characteristics — such as mean, variance, and correlation — do **not change with time**. Otherwise, it is **non-stationary**.
 
-2.  **Wide-Sense Stationary (WSS):** This is a weaker but often more practical form of stationarity. A process is WSS if it meets two conditions:
-    *   The **mean** of the process is constant (not a function of time).
-        `E[X(t)] = μ`
-    *   The **autocorrelation** function depends only on the time lag `τ`, not on absolute time.
-        `E[X(t)X(t+τ)] = R(τ)`
+#### **1. Strict-Sense Stationary (SSS)**
 
-3.  **Non-Stationary:** A process that is not WSS is considered non-stationary. This can happen if its mean changes over time or if its autocorrelation structure (e.g., its variance) changes over time.
+A random process $X(t)$ is **Strict-Sense Stationary** if **all** its joint probability distributions are invariant under time shifts.
 
-**Relationship:** All SSS processes are also WSS. However, a process can be WSS without being SSS if its higher-order statistics (like skewness) change over time.
+That is, for any integer $ n \,$ time instants $ t_1, t_2, \ldots, t_n $, and any time shift $T $\:
+
+$$
+f_{X(t_1), X(t_2), \ldots, X(t_n)}(x_1, x_2, \ldots, x_n)
+= f_{X(t_1 + T), X(t_2 + T), \ldots, X(t_n + T)}(x_1, x_2, \ldots, x_n)
+$$
+
+This means **the entire probabilistic behavior** of the process looks the same no matter when you observe it.
+
+**In simple terms:**
+Shifting the observation window in time does **not** change the statistics of the process — not just the mean or variance, but all higher-order moments and dependencies too.
+
+**Examples:**
+
+- A pure sinusoid \$ X(t) = A $\cos(\omega t + \phi) $ where $ \phi $ is a uniform random variable over $[0, 2\pi)$→ SSS because its distribution is independent of time.
+
+#### **2. Wide-Sense Stationary (WSS)**
+
+Since verifying full strict-sense stationarity is often impractical, we use a weaker but very useful notion: **Wide-Sense Stationarity (WSS).**
+
+A process $ X(t) $ is **WSS** if it satisfies:
+
+1. **Constant Mean:**
+
+   $$
+   \mathbb{E}[X(t)] = \mu_X = \text{constant}
+   $$
+2. **Autocorrelation depends only on time lag:**
+
+   $$
+   R_X(t_1, t_2) = R_X(t_1 - t_2) = R_X(\tau)
+   $$
+
+This means that the correlation between two values of $ X(t) $ depends only on **how far apart** they are in time (the lag $ \tau )$, not **when** they were measured.
+
+**In other words:**
+
+- The process has a stable average value.
+- The level of similarity between samples depends only on time separation.
+
+**Examples:**
+
+- A zero-mean white noise process (flat PSD).
+- A stationary Gaussian process with constant variance.
+
+#### **3. Non-Stationary Processes**
+
+A process is **non-stationary** if it violates the WSS conditions:
+
+- Mean is not constant, i.e. $ \mathbb{E}[X(t)] \neq \mu $.
+- Autocorrelation depends on the absolute time instants, not just the lag.
+
+**Examples:**
+
+- $ X(t) = t + W(t) $: mean grows linearly with time.
+- $ X(t) = A(t) \cos(\omega t) $: amplitude envelope $ A(t) $ changes with time.
+- Speech signals, stock prices, and weather patterns are typically non-stationary.
+
+---
+
+### **Relationship Between SSS and WSS**
+
+- Every **Strict-Sense Stationary** process is also **Wide-Sense Stationary**.
+- The converse is **not necessarily true** — a process may have constant mean and lag-dependent autocorrelation but still have higher-order moments that vary with time.
+
+**Hierarchy:**
+
+$$
+\text{Strict-Sense Stationary} \implies \text{Wide-Sense Stationary}
+$$
+
+---
+
+### **Why Stationarity Matters**
+
+Stationarity is crucial in signal processing and stochastic analysis because many analytical tools — such as the **Power Spectral Density (PSD)**, **Fourier Transform relationships**, and **filtering techniques** — assume that the process is WSS.
+
+If the process is **non-stationary**, these tools may not be valid or may give misleading results.
+
+**In practice:**
+
+- Real-world signals (e.g., EEG, seismic data, audio) are often **locally stationary** — approximately WSS within short time windows.
+  → This is why **Short-Time Fourier Transform (STFT)** and **wavelet analysis** are used for time-varying spectral analysis.
+
+---
+
+### **Summary Table**
+
+| Type                                    | Definition                                             | Examples                                             | Remarks                                      |
+| --------------------------------------- | ------------------------------------------------------ | ---------------------------------------------------- | -------------------------------------------- |
+| **Strict-Sense Stationary (SSS)** | All joint distributions are invariant under time shift | Sinusoid with random phase, white noise              | Hard to verify; strongest form               |
+| **Wide-Sense Stationary (WSS)**   | Mean constant, ACF depends only on lag                 | Gaussian noise, AR(1) process with stable parameters | Most common assumption in practice           |
+| **Non-Stationary**                | Mean or correlation changes with time                  | Speech, climate data, trends                         | Often approximated as “locally stationary” |

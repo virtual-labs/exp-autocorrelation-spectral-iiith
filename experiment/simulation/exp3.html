@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="./css/css3.css" />
     <!-- Add Chart.js for plotting -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- ADDED: MathJax for rendering equations -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
     <title>Stationary & WSS Processes</title>
 </head>
 
@@ -73,7 +75,9 @@
             <!-- Task 2: ACF Identification -->
             <div class="task-panel" id="task2-acf-identification" style="display: none;">
                 <h3 class="task-title">Step 2: Identify the Autocorrelation Function (ACF)</h3>
-                 <p class="task-prompt">Based on the process, which of the following plots represents its Autocorrelation Function, R(τ)?</p>
+                <!-- ADDED: Recap container for Step 1 result -->
+                <div id="recap-task1" class="recap-box"></div>
+                <p class="task-prompt">Based on this process, which of the following plots represents its Autocorrelation Function, R(τ)?</p>
                 <div class="plots-container" id="acf-plots">
                     <!-- JS will generate ACF plots here -->
                 </div>
@@ -86,6 +90,8 @@
             <!-- Task 3: PSD Identification -->
             <div class="task-panel" id="task3-psd-identification" style="display: none;">
                 <h3 class="task-title">Step 3: Identify the Power Spectral Density (PSD)</h3>
+                <!-- ADDED: Recap container for Step 2 results -->
+                <div id="recap-task2" class="recap-box"></div>
                 <p class="task-prompt">Now, which of the following plots represents the Power Spectral Density (PSD), S(f)?</p>
                 <div class="plots-container" id="psd-plots">
                     <!-- JS will generate PSD plots here -->
