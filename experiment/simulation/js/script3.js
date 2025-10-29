@@ -53,7 +53,7 @@ const processDatabase = [
     },
     {
         id: 'white_noise',
-        description: "A signal where each sample is a completely random, independent value from a consistent source, like thermal noise in a resistor.",
+        description: "A signal like the thermal noise in a resistor.",
         correctEquation: { id: 'eq_noise', math: `<math><mi>X</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>=</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>]</mo></math>` },
         distractorEquations: [
             { id: 'eq_sine', math: `<math><mi>X</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>A</mi><mo>⁡</mo><mrow><mi>cos</mi><mo>⁡</mo><mrow><mo>(</mo><msub><mi>ω</mi><mn>0</mn></msub><mi>t</mi><mo>+</mo><mi>Θ</mi><mo>)</mo></mrow></mrow></math>` },

@@ -56,7 +56,7 @@ const processDefinitions = {
                 </ul>
                 <p>Consider a set of samples at times <math><msub><mi>n</mi><mn>1</mn></msub><mo>,</mo><mo>...</mo><mo>,</mo><msub><mi>n</mi><mi>k</mi></msub></math>. Their joint Probability Density Function is <math><mi>f</mi><mo>(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mo>...</mo><mo>,</mo><msub><mi>x</mi><mi>k</mi></msub><mo>)</mo><mo>=</mo><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>k</mi></munderover><msub><mi>f</mi><mi>W</mi></msub><mo>(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>)</mo></math>. If we shift all time indices by <i>m</i>, the new set of samples is still Independent and Identically Distributed, so its joint Probability Density Function is identical. This directly satisfies the condition for SSS.</p>
                 <h4>WSS Proof:</h4>
-                <p><strong>Mean:</strong> <math><mi>E</mi><mo>[</mo><mi>X</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>]</mo><mo>=</mo><mi>E</mi><mo>[</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>]</mo><mo>=</mo><mn>0</mn></math>. (Constant)</p>
+                <p><strong>Mean:</strong> <math><mi>E</mi><mo>[</mo><mi>X</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>]</mo><mo>=</mo><mi>E</mi><mo>[</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>]</mo><mo>=</><mn>0</mn></math>. (Constant)</p>
                 <p><strong>Autocorrelation:</strong> <math><msub><mi>R</mi><mrow><mi>X</mi><mi>X</mi></mrow></msub><mo>[</mo><mi>k</mi><mo>]</mo><mo>=</mo><mi>E</mi><mo>[</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>]</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>-</mo><mi>k</mi><mo>]</mo><mo>]</mo><mo>=</mo><msup><mi>σ</mi><mn>2</mn></msup><mi>δ</mi><mo>[</mo><mi>k</mi><mo>]</mo></math>. This only depends on the lag <i>k</i>, not on time <i>n</i>.</p>`,
             sampleGenerator: () => (Math.random() - 0.5) * 2,
             proofPlot: { type: 'acf', data: (labels) => labels.map(k => k === 0 ? 1 : 0) }
@@ -74,7 +74,7 @@ const processDefinitions = {
                 <p><strong>This is a Wide-Sense Stationary (WSS) process.</strong> Its first and second moments (mean and autocorrelation) are time-invariant.</p>
                 <h4>WSS Proof:</h4>
                 <p><strong>Mean:</strong> <math><mi>E</mi><mo>[</mo><mi>X</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>]</mo><mo>=</mo><mi>E</mi><mo>[</mo><mi>A</mi><mo>]</mo><mi>cos</mi><mo>(</mo><mi>ω</mi><mi>t</mi><mo>)</mo><mo>+</mo><mi>E</mi><mo>[</mo><mi>B</mi><mo>]</mo><mi>sin</mi><mo>(</mo><mi>ω</mi><mi>t</mi><mo>)</mo><mo>=</mo><mn>0</mn></math>. (Constant)</p>
-                <p><strong>Autocorrelation:</strong> <math><msub><mi>R</mi><mrow><mi>X</mi><mi>X</mi></mrow></msub><mo>(</mo><mi>τ</mi><mo>)</><mo>=</mo><msup><mi>σ</mi><mn>2</mn></msup><mi>cos</mi><mo>(</mo><mi>ω</mi><mi>τ</mi><mo>)</mo></math>. This only depends on the time lag τ.</p>
+                <p><strong>Autocorrelation:</strong> <math><msub><mi>R</mi><mrow><mi>X</mi><mi>X</mi></mrow></msub><mo>(</mo><mi>τ</mi><mo>)</mo><mo>=</mo><msup><mi>σ</mi><mn>2</mn></msup><mi>cos</mi><mo>(</mo><mi>ω</mi><mi>τ</mi><mo>)</mo></math>. This only depends on the time lag τ.</p>
                 <h4 style="margin-top:1.5rem">Why is it not SSS?</h4>
                 <p>This process is not guaranteed to be Strict-Sense Stationary. For a process to be SSS, all of its statistical properties must be time-invariant. Here, while the mean and autocorrelation are constant, the higher-order moments (like skewness or kurtosis) might not be. The problem states A and B are uncorrelated but does not specify their distributions. If, for example, A had a uniform distribution and B had a triangular distribution, the overall probability distribution of X(t) would change with time, even if the first two moments do not. Therefore, without knowing more about A and B, we can only classify it as WSS.</p>`,
             sampleGenerator: (labels) => {
@@ -140,11 +140,8 @@ const processDefinitions = {
 // --------------------------------------
 // 3. Plotting & UI Update
 // --------------------------------------
-function renderPlots(process) {
-    // Add containers for the plots BEFORE trying to get their context
-    explanationContent.innerHTML += `
-        <div class="plot-container"><canvas id="plot1"></canvas></div>
-        <div class="plot-container"><canvas id="plot2"></canvas></div>`;
+function createCharts(process) {
+    // This function creates the charts. It assumes the canvas elements already exist in the DOM.
 
     // Plot 1: Sample Realizations
     const ctx1 = document.getElementById('plot1').getContext('2d');
@@ -192,7 +189,7 @@ function renderPlots(process) {
     // Plot 2: Proof Illustration (ACF, Mean, or Variance)
     const ctx2 = document.getElementById('plot2').getContext('2d');
     const proofPlot = process.proofPlot;
-    let plot2Labels, plot2Title, plot2XAxis, plot2Color;
+    let plot2Title, plot2XAxis, plot2Color;
 
     if (proofPlot.type === 'acf') {
         plot2Title = 'Autocorrelation Function R(τ)';
@@ -284,22 +281,29 @@ function handleSubmit() {
 
     // --- CHANGED SECTION START ---
 
-    // 1. ADDED: Create a recap of the problem definition for context.
+    // 1. Create a recap of the problem definition.
     const recapHTML = `
         <h4 class="v-datalist-subtitle" style="margin-bottom: 1rem;">The Process Under Review</h4>
         <div class="equation-box">${currentProcess.equation}</div>
         <hr style="margin: 1.5rem 0;" />
     `;
+    
+    // 2. Create the HTML for the plot containers, which will now appear first.
+    const plotContainersHTML = `
+        <h4 class="v-datalist-subtitle" style="margin-top: 1.5rem;">Visualizations</h4>
+        <div class="plot-container"><canvas id="plot1"></canvas></div>
+        <div class="plot-container"><canvas id="plot2"></canvas></div>
+        <hr style="margin: 1.5rem 0;" />
+    `;
 
-    // 2. MODIFIED: Prepend the recap to the detailed explanation.
-    explanationContent.innerHTML = recapHTML + currentProcess.explanation;
+    // 3. Combine all parts in the correct order: Recap -> Plots -> Proofs
+    explanationContent.innerHTML = recapHTML + plotContainersHTML + currentProcess.explanation;
     explanationPanel.style.display = 'block';
 
-    // Render the plots for the explanation
-    renderPlots(currentProcess);
+    // 4. Render the charts into the newly created canvas elements
+    createCharts(currentProcess);
 
-    // 3. ADDED: Tell MathJax to typeset the new content in the explanation panel.
-    // This is crucial for rendering the dynamically added equations.
+    // 5. Tell MathJax to typeset the new content in the explanation panel.
     if (window.MathJax) {
         MathJax.typesetPromise([explanationPanel]).catch(function (err) {
             console.log('MathJax error: ', err);
