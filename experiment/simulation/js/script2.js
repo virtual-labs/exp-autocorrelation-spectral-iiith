@@ -5,158 +5,229 @@ const signalSelectorContainer = document.getElementById('signal-selector-contain
 const submitBtn = document.getElementById('submitBtn');
 const userGuess = document.getElementById('user-guess');
 const submissionFeedback = document.getElementById('submission-feedback');
+const equationContainer = document.getElementById('equation-container');
+const variableDefinitions = document.getElementById('variable-definitions');
+const explanationPanel = document.getElementById('explanation-panel');
+const explanationContent = document.getElementById('explanation-content');
 
-const mainPlotWrapper = document.getElementById('main-plot-wrapper');
-const inspectorWindow = document.getElementById('inspector-window');
-const observationsDiv = document.getElementById('observations');
-const meanDisplay = document.querySelector('#mean-display p');
-
-const mainChartCtx = document.getElementById('mainSignalChart').getContext('2d');
-const acfChartCtx = document.getElementById('acfChart').getContext('2d');
 
 // --------------------------------------
 // 2. Configuration & State
 // --------------------------------------
-const TOTAL_POINTS = 1000;
-const WINDOW_POINTS = 200;
-const ACF_MAX_LAG = 50;
-let isDragging = false;
-let currentSignalData = [];
-let mainChart, acfChart;
-let currentSignal; // Will hold the object of the currently displayed signal
+let currentProcess; // Will hold the object of the currently displayed process
 
-const signalDefinitions = [
-    {
-        type: 'wss',
-        generator: generateWSS,
-        explanation: `<strong>This is a Wide-Sense Stationary (WSS) signal.</strong><br>The correct analysis shows that the <strong>Local Mean</strong> stays close to zero and the overall shape and peak of the <strong>Local ACF</strong> plot remains consistent, regardless of where the inspector window is placed. This indicates that its statistical properties are not changing over time.`
-    },
-    {
-        type: 'nonStatMean',
-        generator: generateNonStationaryMean,
-        explanation: `<strong>This signal has a Non-Stationary Mean.</strong><br>The correct analysis shows that as you drag the inspector window from left to right, the <strong>Local Mean</strong> value increases, following the upward trend (ramp) of the signal. Because the mean is not constant, the process is non-stationary.`
-    },
-    {
-        type: 'nonStatAcf',
-        generator: generateNonStationaryACF,
-        explanation: `<strong>This signal has a Non-Stationary Autocorrelation.</strong><br>The correct analysis shows that while the <strong>Local Mean</strong> stays near zero, the <strong>Local ACF</strong>'s peak value (representing local variance) changes significantly. The peak gets larger and smaller as you move the window, corresponding to the parts of the signal where the amplitude is wide and narrow. Since the ACF changes with time, the process is non-stationary.`
-    }
-];
+// --- Process Definitions Database ---
+const processDefinitions = {
+    sss: [
+        {
+            type: 'sss',
+            equation: `<math><mi>X</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>A</mi><mo>⁡</mo><mrow><mi>cos</mi><mo>⁡</mo><mrow><mo>(</mo><mn>2</mn><mi>π</mi><msub><mi>f</mi><mn>0</mn></msub><mi>t</mi><mo>+</mo><mi>Θ</mi><mo>)</mo></mrow></mrow></math>`,
+            variables: `<ul>
+                <li><i>A</i> and <i>f<sub>0</sub></i> are constants.</li>
+                <li><i>Θ</i> is a random variable uniformly distributed in [0, 2π].</li>
+            </ul>`,
+            explanation: `
+                <p><strong>This is a Strict-Sense Stationary (SSS) process.</strong></p>
+                <h4>SSS Proof:</h4>
+                <p>For a process to be SSS, its joint probability distribution must be invariant to time shifts. Let's analyze the process after a time shift <i>ε</i>:
+                <br><math style="display: block; margin-top: 1rem;"><mi>X</mi><mo>(</mo><mi>t</mi><mo>+</mo><mi>ε</mi><mo>)</mo><mo>=</mo><mi>A</mi><mo>⁡</mo><mrow><mi>cos</mi><mo>⁡</mo><mrow><mo>(</mo><mn>2</mn><mi>π</mi><msub><mi>f</mi><mn>0</mn></msub><mo>(</mo><mi>t</mi><mo>+</mo><mi>ε</mi><mo>)</mo><mo>+</mo><mi>Θ</mi><mo>)</mo></mrow></mrow><mo>=</mo><mi>A</mi><mo>⁡</mo><mrow><mi>cos</mi><mo>⁡</mo><mrow><mo>(</mo><mn>2</mn><mi>π</mi><msub><mi>f</mi><mn>0</mn></msub><mi>t</mi><mo>+</mo><mo>(</mo><mi>Θ</mi><mo>+</mo><mn>2</mn><mi>π</mi><msub><mi>f</mi><mn>0</mn></msub><mi>ε</mi><mo>)</mo><mo>)</mo></mrow></mrow></math></p>
+                <p>Let <math><msup><mi>Θ</mi><mo>′</mo></msup><mo>=</mo><mo>(</mo><mi>Θ</mi><mo>+</mo><mn>2</mn><mi>π</mi><msub><mi>f</mi><mn>0</mn></msub><mi>ε</mi><mo>)</mo><mo> mod </mo><mn>2</mn><mi>π</mi></math>. Since <i>Θ</i> is a random variable uniformly distributed over a full cycle [0, 2π], shifting it by a constant amount and taking the modulo does not change its probability distribution. The distribution of <i>Θ'</i> is identical to the distribution of <i>Θ</i>. Because all statistical properties of the process are derived from this single random variable, and its distribution is unaffected by a time shift, the process is SSS.</p>
+                <h4>WSS Proof:</h4>
+                <p>Since the process is SSS, it must also be WSS.
+                <br><strong>Mean:</strong> <math><mi>E</mi><mo>[</mo><mi>X</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>]</mo><mo>=</mo><mn>0</mn></math>. (Constant)</p>
+                <p><strong>Autocorrelation:</strong> <math><msub><mi>R</mi><mrow><mi>X</mi><mi>X</mi></mrow></msub><mo>(</mo><mi>τ</mi><mo>)</mo><mo>=</mo><mfrac><msup><mi>A</mi><mn>2</mn></msup><mn>2</mn></mfrac><mi>cos</mi><mo>(</mo><mn>2</mn><mi>π</mi><msub><mi>f</mi><mn>0</mn></msub><mi>τ</mi><mo>)</mo></math>, which only depends on the time lag τ.</p>`,
+            sampleGenerator: (labels) => 2 * Math.cos(2 * Math.PI * 1 * labels.t + Math.random() * 2 * Math.PI),
+            proofPlot: { type: 'acf', data: (labels) => labels.map(tau => 2 * Math.cos(2 * Math.PI * 1 * tau)) }
+        },
+        {
+            type: 'sss',
+            equation: `<math><mi>X</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>=</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>]</mo></math>`,
+            variables: `<ul>
+                <li>This is a discrete-time process (<strong>discrete white noise</strong>).</li>
+                <li><i>W[n]</i> is a sequence of <strong>Independent and Identically Distributed</strong> random variables with mean E[<i>W[n]</i>] = 0 and variance E[<i>W[n]<sup>2</sup></i>] = σ<sup>2</sup>.</li>
+            </ul>`,
+            explanation: `
+                <p><strong>This is a Strict-Sense Stationary (SSS) process by definition.</strong></p>
+                <h4>SSS Proof:</h4>
+                <p>The term <strong>Independent and Identically Distributed</strong> provides the proof directly:</p>
+                <ul style="list-style: disc; margin-left: 20px;">
+                    <li><strong>Identically Distributed:</strong> The probability distribution of any single sample <i>X[n]</i> is the same, regardless of the time index <i>n</i>.</li>
+                    <li><strong>Independent:</strong> The joint probability distribution of any set of samples is the product of their individual distributions.</li>
+                </ul>
+                <p>Consider a set of samples at times <math><msub><mi>n</mi><mn>1</mn></msub><mo>,</mo><mo>...</mo><mo>,</mo><msub><mi>n</mi><mi>k</mi></msub></math>. Their joint Probability Density Function is <math><mi>f</mi><mo>(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mo>...</mo><mo>,</mo><msub><mi>x</mi><mi>k</mi></msub><mo>)</mo><mo>=</mo><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>k</mi></munderover><msub><mi>f</mi><mi>W</mi></msub><mo>(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>)</mo></math>. If we shift all time indices by <i>m</i>, the new set of samples is still Independent and Identically Distributed, so its joint Probability Density Function is identical. This directly satisfies the condition for SSS.</p>
+                <h4>WSS Proof:</h4>
+                <p><strong>Mean:</strong> <math><mi>E</mi><mo>[</mo><mi>X</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>]</mo><mo>=</mo><mi>E</mi><mo>[</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>]</mo><mo>=</><mn>0</mn></math>. (Constant)</p>
+                <p><strong>Autocorrelation:</strong> <math><msub><mi>R</mi><mrow><mi>X</mi><mi>X</mi></mrow></msub><mo>[</mo><mi>k</mi><mo>]</mo><mo>=</mo><mi>E</mi><mo>[</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>]</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>-</mo><mi>k</mi><mo>]</mo><mo>]</mo><mo>=</mo><msup><mi>σ</mi><mn>2</mn></msup><mi>δ</mi><mo>[</mo><mi>k</mi><mo>]</mo></math>. This only depends on the lag <i>k</i>, not on time <i>n</i>.</p>`,
+            sampleGenerator: () => (Math.random() - 0.5) * 2,
+            proofPlot: { type: 'acf', data: (labels) => labels.map(k => k === 0 ? 1 : 0) }
+        },
+    ],
+    wss: [
+        {
+            type: 'wss',
+            equation: `<math><mi>X</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>A</mi><mo>⁡</mo><mrow><mi>cos</mi><mo>⁡</mo><mrow><mo>(</mo><mi>ω</mi><mi>t</mi><mo>)</mo></mrow></mrow><mo>+</mo><mi>B</mi><mo>⁡</mo><mrow><mi>sin</mi><mo>⁡</mo><mrow><mo>(</mo><mi>ω</mi><mi>t</mi><mo>)</mo></mrow></mrow></math>`,
+            variables: `<ul>
+                <li><i>ω</i> is a constant frequency.</li>
+                <li><i>A</i> and <i>B</i> are uncorrelated random variables with E[<i>A</i>] = E[<i>B</i>] = 0 and E[<i>A²</i>] = E[<i>B²</i>] = σ².</li>
+            </ul>`,
+            explanation: `
+                <p><strong>This is a Wide-Sense Stationary (WSS) process.</strong> Its first and second moments (mean and autocorrelation) are time-invariant.</p>
+                <h4>WSS Proof:</h4>
+                <p><strong>Mean:</strong> <math><mi>E</mi><mo>[</mo><mi>X</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>]</mo><mo>=</mo><mi>E</mi><mo>[</mo><mi>A</mi><mo>]</mo><mi>cos</mi><mo>(</mo><mi>ω</mi><mi>t</mi><mo>)</mo><mo>+</mo><mi>E</mi><mo>[</mo><mi>B</mi><mo>]</mo><mi>sin</mi><mo>(</mo><mi>ω</mi><mi>t</mi><mo>)</mo><mo>=</mo><mn>0</mn></math>. (Constant)</p>
+                <p><strong>Autocorrelation:</strong> <math><msub><mi>R</mi><mrow><mi>X</mi><mi>X</mi></mrow></msub><mo>(</mo><mi>τ</mi><mo>)</mo><mo>=</mo><msup><mi>σ</mi><mn>2</mn></msup><mi>cos</mi><mo>(</mo><mi>ω</mi><mi>τ</mi><mo>)</mo></math>. This only depends on the time lag τ.</p>
+                <h4 style="margin-top:1.5rem">Why is it not SSS?</h4>
+                <p>This process is not guaranteed to be Strict-Sense Stationary. For a process to be SSS, all of its statistical properties must be time-invariant. Here, while the mean and autocorrelation are constant, the higher-order moments (like skewness or kurtosis) might not be. The problem states A and B are uncorrelated but does not specify their distributions. If, for example, A had a uniform distribution and B had a triangular distribution, the overall probability distribution of X(t) would change with time, even if the first two moments do not. Therefore, without knowing more about A and B, we can only classify it as WSS.</p>`,
+            sampleGenerator: (labels) => {
+                const A = (Math.random() - 0.5) * 2.5; const B = (Math.random() - 0.5) * 2.5;
+                return A * Math.cos(2 * Math.PI * 1 * labels.t) + B * Math.sin(2 * Math.PI * 1 * labels.t);
+            },
+            proofPlot: { type: 'acf', data: (labels) => labels.map(tau => 1.5 * Math.cos(2 * Math.PI * 1 * tau)) }
+        },
+        {
+            type: 'wss',
+            equation: `<math><mi>X</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>=</mo><mn>0.8</mn><mo>⁢</mo><mi>X</mi><mo>[</mo><mi>n</mi><mo>-</mo><mn>1</mn><mo>]</mo><mo>+</mo><mi>W</mi><mo>[</mo><mi>n</mi><mo>]</mo></math>`,
+            variables: `<ul>
+                <li>This is a discrete-time <strong>Autoregressive (AR)</strong> process.</li>
+                <li><i>W[n]</i> is a zero-mean white noise process.</li>
+            </ul>`,
+            explanation: `
+                <p><strong>This is a Wide-Sense Stationary (WSS) process.</strong> Provided the process started in the infinite past (or has run long enough to reach a steady state), it is stationary.</p>
+                <h4>WSS Proof:</h4>
+                <p><strong>Mean:</strong> In steady state, <math><mi>E</mi><mo>[</mo><mi>X</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>]</mo><mo>=</mo><mn>0</mn></math>. (Constant)</p>
+                <p><strong>Autocorrelation:</strong> <math><msub><mi>R</mi><mrow><mi>X</mi><mi>X</mi></mrow></msub><mo>[</mo><mi>k</mi><mo>]</mo><mo>=</mo><msubsup><mi>σ</mi><mi>X</mi><mn>2</mn></msubsup><mo>(</mo><mn>0.8</mn><msup><mo>)</mo><mrow><mo>|</mo><mi>k</mi><mo>|</mo></mrow></msup></math>. This depends only on the lag <i>k</i>.</p>
+                <h4 style="margin-top:1.5rem">Why is it not SSS?</h4>
+                <p>Similar to other linear processes, this Autoregressive process is only guaranteed to be SSS if the driving noise <i>W[n]</i> is SSS (for example, if it is Gaussian Independent and Identically Distributed noise). Since the definition of <i>W[n]</i> only imposes conditions on its mean and variance, we can only prove that the resulting process <i>X[n]</i> is WSS.</p>`,
+            sampleGenerator: (labels, past) => 0.8 * past.x1 + labels.w,
+            proofPlot: { type: 'acf', data: (labels) => labels.map(k => Math.pow(0.8, Math.abs(k)) * 2) }
+        }
+    ],
+    nonStat: [
+        {
+            type: 'nonStat',
+            equation: `<math><mi>X</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>A</mi><mo>⁢</mo><mi>t</mi><mo>+</mo><mi>B</mi></math>`,
+            variables: `<ul>
+                <li><i>A</i> and <i>B</i> are independent random variables with means E[<i>A</i>] = μ<sub>A</sub> ≠ 0 and E[<i>B</i>] = μ<sub>B</sub>.</li>
+                <li><i>t</i> represents time.</li>
+            </ul>`,
+            explanation: `
+                <p><strong>This is a Non-Stationary process because its mean is a function of time.</strong></p>
+                <h4>Proof:</h4>
+                <p><strong>Mean:</strong> <math><mi>E</mi><mo>[</mo><mi>X</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>]</mo><mo>=</mo><mi>E</mi><mo>[</mo><mi>A</mi><mo>]</mo><mo>⁢</mo><mi>t</mi><mo>+</mo><mi>E</mi><mo>[</mo><mi>B</mi><mo>]</mo><mo>=</mo><msub><mi>μ</mi><mi>A</mi></msub><mi>t</mi><mo>+</mo><msub><mi>μ</mi><mi>B</mi></msub></math>.</p>
+                <p>Since the mean depends linearly on time <i>t</i>, the process is non-stationary. A process must at least be WSS to be considered stationary.</p>`,
+            sampleGenerator: (labels) => (0.5 * labels.t) + (Math.random() - 0.5) * 2,
+            proofPlot: { type: 'mean', data: (labels) => labels.map(t => 0.5 * t + 0) }
+        },
+        {
+            type: 'nonStat',
+            equation: `<math><mi>X</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>W</mi><mo>[</mo><mi>i</mi><mo>]</mo></math>`,
+            variables: `<ul>
+                <li>This is a discrete-time <strong>Random Walk</strong> process, with X[0]=0.</li>
+                <li><i>W[n]</i> is a zero-mean white noise process with variance σ².</li>
+            </ul>`,
+            explanation: `
+                <p><strong>This is a Non-Stationary process because its variance (and thus autocorrelation) is a function of time.</strong></p>
+                <h4>Proof:</h4>
+                <p><strong>Mean:</strong> <math><mi>E</mi><mo>[</mo><mi>X</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>]</mo><mo>=</mo><mn>0</mn></math>. The mean is constant, so this condition for stationarity is met.</p>
+                <p>The <strong>Variance</strong>, however, is: <math><mi>Var</mi><mo>(</mo><mi>X</mi><mo>[</mo><mi>n</mi><mo>]</mo><mo>)</mo><mo>=</mo><mi>E</mi><mo>[</mo><msup><mrow><mo>(</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>W</mi><mo>[</mo><mi>i</mi><mo>]</mo><mo>)</mo></mrow><mn>2</mn></msup><mo>]</mo><mo>=</mo><mi>n</mi><msup><mi>σ</mi><mn>2</mn></msup></math>.</p>
+                <p>Because the variance depends on time <i>n</i>, the process is non-stationary.</p>`,
+            sampleGenerator: (labels, past) => past.x1 + labels.w,
+            proofPlot: { type: 'variance', data: (labels) => labels.map(t => t) }
+        },
+    ]
+};
+
 
 // --------------------------------------
-// 3. Signal Generation (Functions are the same as before)
+// 3. Plotting & UI Update
 // --------------------------------------
-function generateWhiteNoise(n, amp=1) { return Array.from({length: n}, () => (Math.random() - 0.5) * 2 * amp); }
-function generateWSS() {
-    const data = []; const noise = generateWhiteNoise(TOTAL_POINTS, 0.5);
-    for (let i=0; i<TOTAL_POINTS; i++) data.push(2*Math.cos(2*Math.PI*10*(i/TOTAL_POINTS)) + noise[i]);
-    return data;
-}
-function generateNonStationaryMean() {
-    const data = [];
-    for (let i=0; i<TOTAL_POINTS; i++) data.push(2*Math.sin(2*Math.PI*15*(i/TOTAL_POINTS)) + 10*(i/TOTAL_POINTS));
-    return data;
-}
-function generateNonStationaryACF() {
-    const data = []; const noise = generateWhiteNoise(TOTAL_POINTS, 1.5);
-    for (let i=0; i<TOTAL_POINTS; i++) data.push((1 + 1.5*Math.cos(2*Math.PI*3*(i/TOTAL_POINTS))) * noise[i]);
-    return data;
-}
+function createCharts(process) {
+    // This function creates the charts. It assumes the canvas elements already exist in the DOM.
 
+    // Plot 1: Sample Realizations
+    const ctx1 = document.getElementById('plot1').getContext('2d');
+    const datasets1 = [];
+    const timeLabels = Array.from({length: 100}, (_, i) => i / 50); // Time from 0 to 2
 
-// --------------------------------------
-// 4. Calculation Functions (Functions are the same as before)
-// --------------------------------------
-function calculateMean(dataSlice) {
-    if (dataSlice.length === 0) return 0;
-    return dataSlice.reduce((a, b) => a + b, 0) / dataSlice.length;
-}
-function calculateACF(dataSlice, maxLag) {
-    const N = dataSlice.length;
-    if (N === 0) return [];
-    const acf = [];
-    // Negative lags
-    for (let lag = -maxLag; lag <= maxLag; lag++) {
-        let sum = 0;
-        for (let i = 0; i < N - Math.abs(lag); i++) {
-            if (lag < 0) {
-                sum += dataSlice[i] * dataSlice[i - lag];
-            } else {
-                sum += dataSlice[i] * dataSlice[i + lag];
+    for(let i = 0; i < 3; i++) { // Generate 3 sample paths
+        const data = [];
+        let w_history = [0, 0];
+        let x_history = [0, 0];
+        const A_const = (Math.random() - 0.5) * 4; // For processes that use a single random var
+
+        for (const t of timeLabels) {
+            const w = (Math.random() - 0.5) * 2;
+            let val = process.sampleGenerator({ t: t, w: w }, { w1: w_history[0], x1: x_history[0] });
+            if (process.equation.includes('<mi>X</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>A</mi>')) {
+                 val = A_const;
             }
+            data.push(val);
+            w_history.unshift(w); w_history.pop();
+            x_history.unshift(val); x_history.pop();
         }
-        acf.push(sum / N);
+
+        datasets1.push({
+            label: `Realization ${i+1}`,
+            data: data,
+            borderColor: `hsl(${i * 120}, 70%, 50%)`,
+            borderWidth: 1.5,
+            pointRadius: 0,
+            fill: false,
+            tension: 0.1
+        });
     }
-    return acf;
-}
 
-// --------------------------------------
-// 5. Plotting & UI Update
-// --------------------------------------
-function initializeCharts() {
-    mainChart = new Chart(mainChartCtx, {
+    new Chart(ctx1, {
         type: 'line',
-        data: {
-            datasets: [{
-                data: [],
-                borderColor: '#3273dc',
-                borderWidth: 2,
-                pointRadius: 0,
-                fill: false,
-            }]
-        },
+        data: { labels: timeLabels, datasets: datasets1 },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: { display: false },
-                y: { ticks: { font: { size: 10 } } }
-            },
-            plugins: { legend: { display: false }, tooltip: { enabled: false } }
+            responsive: true, maintainAspectRatio: false,
+            plugins: { title: { display: true, text: 'Sample Realizations of the Process' }, legend: { position: 'bottom'}},
+            scales: { x: { title: { display: true, text: 'Time (t or n)' } } }
         }
     });
-    acfChart = new Chart(acfChartCtx, {
+
+    // Plot 2: Proof Illustration (ACF, Mean, or Variance)
+    const ctx2 = document.getElementById('plot2').getContext('2d');
+    const proofPlot = process.proofPlot;
+    let plot2Title, plot2XAxis, plot2Color;
+
+    if (proofPlot.type === 'acf') {
+        plot2Title = 'Autocorrelation Function R(τ)';
+        plot2XAxis = 'Lag (τ or k)';
+        plot2Color = '#23d160';
+        plot2Labels = Array.from({length: 101}, (_, i) => (i-50)/10); // Lags
+    } else if (proofPlot.type === 'mean') {
+        plot2Title = 'Mean E[X(t)] vs. Time';
+        plot2XAxis = 'Time (t)';
+        plot2Color = '#ff3860';
+        plot2Labels = timeLabels;
+    } else { // variance
+        plot2Title = 'Variance Var(X(t)) vs. Time';
+        plot2XAxis = 'Time (n)';
+        plot2Color = '#ffae42';
+        plot2Labels = timeLabels;
+    }
+
+    const plot2Data = [{
+        label: plot2Title,
+        data: proofPlot.data(plot2Labels),
+        borderColor: plot2Color,
+        borderWidth: 2.5,
+        pointRadius: 0,
+        fill: false,
+    }];
+
+     new Chart(ctx2, {
         type: 'line',
-        data: {
-            labels: [],
-            datasets: [{
-                data: [],
-                borderColor: '#23d160',
-                backgroundColor: '#23d160',
-                borderWidth: 2,
-                pointRadius: 4,
-                pointBackgroundColor: '#23d160',
-                fill: false,
-                showLine: true,
-            }]
-        },
+        data: { labels: plot2Labels, datasets: plot2Data },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: { title: { display: true, text: 'Lag (τ)' } },
-                y: { title: { display: true, text: 'R(τ)' } }
-            },
-            plugins: { legend: { display: false }, tooltip: { enabled: true } }
+            responsive: true, maintainAspectRatio: false,
+            plugins: { title: { display: true, text: plot2Title }, legend: { display: false }},
+            scales: { x: { title: { display: true, text: plot2XAxis } } }
         }
     });
 }
 
-function updateAnalysis() {
-    const plotWidth = mainPlotWrapper.clientWidth;
-    const windowLeft = inspectorWindow.offsetLeft;
-    const startIndex = Math.floor((windowLeft / plotWidth) * TOTAL_POINTS);
-    const dataSlice = currentSignalData.slice(startIndex, startIndex + WINDOW_POINTS);
-    meanDisplay.textContent = calculateMean(dataSlice).toFixed(2);
-    const acfData = calculateACF(dataSlice, ACF_MAX_LAG);
-    // Labels from -maxLag to +maxLag
-    const acfLabels = Array.from({length: acfData.length}, (_, i) => i - ACF_MAX_LAG);
-    acfChart.data.labels = acfLabels;
-    acfChart.data.datasets[0].data = acfData;
-    acfChart.options.scales.x.display = true;
-    acfChart.options.scales.y.display = true;
-    acfChart.update();
-}
 
 function resetUI() {
     userGuess.value = "";
@@ -164,24 +235,21 @@ function resetUI() {
     submitBtn.disabled = false;
     submissionFeedback.style.display = 'none';
     submissionFeedback.className = '';
-    observationsDiv.innerHTML = '<p class="initial-text">Analyze the signal and submit your answer.</p>';
+    explanationPanel.style.display = 'none';
+    explanationContent.innerHTML = ''; // Clear previous explanation
 }
 
-function selectSignal(signal) {
-    currentSignal = signal;
-    currentSignalData = signal.generator();
+function selectProcess(process) {
+    currentProcess = process;
     
-    // Plot signal and reset UI
-    mainChart.data.labels = currentSignalData.map((_, i) => i);
-    mainChart.data.datasets[0].data = currentSignalData;
-    mainChart.update();
-    inspectorWindow.style.left = '0px';
+    equationContainer.innerHTML = currentProcess.equation;
+    variableDefinitions.innerHTML = currentProcess.variables;
+    
     resetUI();
-    updateAnalysis();
 }
 
 // --------------------------------------
-// 6. Event Listeners & Initialization
+// 4. Event Listeners & Initialization
 // --------------------------------------
 function handleSubmit() {
     const guess = userGuess.value;
@@ -193,78 +261,88 @@ function handleSubmit() {
     userGuess.disabled = true;
     submitBtn.disabled = true;
 
-    let feedbackText = '';
-    let feedbackClass = '';
-    let observationHtml = '';
+    let feedbackText;
+    let feedbackClass;
 
-    // Determine correct answer category
-    let correctCategory = (currentSignal.type === 'wss') ? 'wss' : 'nonStat';
-
-    if (guess === correctCategory) {
+    if (guess === currentProcess.type) {
         feedbackText = 'Correct!';
         feedbackClass = 'correct';
-        observationHtml = `<div class="observation-content"><strong>Your answer is correct.</strong><br>${currentSignal.explanation}</div>`;
+    } else if (guess === 'wss' && currentProcess.type === 'sss') {
+        feedbackText = "You're on the right track! The process is indeed WSS, but an even stronger condition applies. See the proof below.";
+        feedbackClass = 'partial';
     } else {
         feedbackText = 'Incorrect.';
         feedbackClass = 'incorrect';
-        // Show generic explanation for user's guess
-        let userExplanation = '';
-        if (guess === 'wss') {
-            userExplanation = signalDefinitions.find(s => s.type === 'wss').explanation;
-        } else if (guess === 'nonStat') {
-            // For nonStat, show both non-stationary explanations
-            userExplanation = `<ul style='margin-left:1em;'>
-                <li>${signalDefinitions.find(s => s.type === 'nonStatMean').explanation}</li>
-                <li>${signalDefinitions.find(s => s.type === 'nonStatAcf').explanation}</li>
-            </ul>`;
-        }
-        observationHtml = `<div class="observation-content"><strong>Your answer is incorrect.</strong><br><u>What you selected:</u><br>${userExplanation}<br><br><u>Correct analysis:</u><br>${currentSignal.explanation}</div>`;
     }
 
     submissionFeedback.textContent = feedbackText;
     submissionFeedback.className = feedbackClass;
-    observationsDiv.innerHTML = observationHtml;
+    submissionFeedback.style.display = 'block';
+
+    // --- CHANGED SECTION START ---
+
+    // 1. Create a recap of the problem definition.
+    const recapHTML = `
+        <h4 class="v-datalist-subtitle" style="margin-bottom: 1rem;">The Process Under Review</h4>
+        <div class="equation-box">${currentProcess.equation}</div>
+        <hr style="margin: 1.5rem 0;" />
+    `;
+    
+    // 2. Create the HTML for the plot containers, which will now appear first.
+    const plotContainersHTML = `
+        <h4 class="v-datalist-subtitle" style="margin-top: 1.5rem;">Visualizations</h4>
+        <div class="plot-container"><canvas id="plot1"></canvas></div>
+        <div class="plot-container"><canvas id="plot2"></canvas></div>
+        <hr style="margin: 1.5rem 0;" />
+    `;
+
+    // 3. Combine all parts in the correct order: Recap -> Plots -> Proofs
+    explanationContent.innerHTML = recapHTML + plotContainersHTML + currentProcess.explanation;
+    explanationPanel.style.display = 'block';
+
+    // 4. Render the charts into the newly created canvas elements
+    createCharts(currentProcess);
+
+    // 5. Tell MathJax to typeset the new content in the explanation panel.
+    if (window.MathJax) {
+        MathJax.typesetPromise([explanationPanel]).catch(function (err) {
+            console.log('MathJax error: ', err);
+        });
+    }
+    
+    // --- CHANGED SECTION END ---
 }
 
-inspectorWindow.addEventListener('mousedown', (e) => { isDragging = true; e.preventDefault(); });
-document.addEventListener('mouseup', () => { isDragging = false; });
-mainPlotWrapper.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    const rect = mainPlotWrapper.getBoundingClientRect();
-    let x = e.clientX - rect.left - (inspectorWindow.offsetWidth / 2);
-    x = Math.max(0, Math.min(rect.width - inspectorWindow.offsetWidth, x));
-    inspectorWindow.style.left = `${x}px`;
-    updateAnalysis();
-});
-submitBtn.addEventListener('click', handleSubmit);
-
 window.addEventListener('load', () => {
-    initializeCharts();
+    // --- UPDATED LOGIC ---
+    // Randomly select exactly one process from each category
+    const sssProcess = processDefinitions.sss[Math.floor(Math.random() * processDefinitions.sss.length)];
+    const wssProcess = processDefinitions.wss[Math.floor(Math.random() * processDefinitions.wss.length)];
+    const nonStatProcess = processDefinitions.nonStat[Math.floor(Math.random() * processDefinitions.nonStat.length)];
 
-    // Shuffle signals for randomness and create buttons
-    const shuffledSignals = signalDefinitions.sort(() => Math.random() - 0.5);
-    shuffledSignals.forEach((sig, index) => {
+    const processes = [sssProcess, wssProcess, nonStatProcess];
+    
+    // Shuffle the selected processes so their order is random
+    const shuffledProcesses = processes.sort(() => Math.random() - 0.5);
+    // --- END UPDATED LOGIC ---
+
+    // Create buttons for the selected mystery processes
+    shuffledProcesses.forEach((proc, index) => {
         const btn = document.createElement('button');
         btn.className = 'button is-primary is-medium';
-        btn.textContent = `Mystery Signal ${index + 1}`;
+        btn.textContent = `Mystery Process ${index + 1}`;
         btn.onclick = () => {
-            // De-select other buttons
             document.querySelectorAll('#signal-selector-container button').forEach(b => b.classList.remove('is-light'));
             btn.classList.add('is-light');
-            selectSignal(sig);
+            selectProcess(proc);
         };
         signalSelectorContainer.appendChild(btn);
     });
+    
+    submitBtn.addEventListener('click', handleSubmit);
 
-    // Change dropdown to only 2 options
-    userGuess.innerHTML = `
-        <option value="">-- Select your answer --</option>
-        <option value="wss">Wide-Sense Stationary (WSS)</option>
-        <option value="nonStat">Non-Stationary</option>
-    `;
-
-    // Set inspector window width and select first signal by default
-    const windowWidth = (WINDOW_POINTS / TOTAL_POINTS) * mainPlotWrapper.clientWidth;
-    inspectorWindow.style.width = `${windowWidth}px`;
-    signalSelectorContainer.firstChild.click(); // Auto-click the first button
+    // Auto-click the first button to load a process on start
+    if (signalSelectorContainer.firstChild) {
+        signalSelectorContainer.firstChild.click();
+    }
 });

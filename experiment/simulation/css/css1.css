@@ -1,69 +1,32 @@
-/* ----------------------------------------
-   Base & General Styling (Consistent with other labs)
-   ---------------------------------------- */
-body {
-    font-family: 'Open Sans', sans-serif;
-    line-height: 1.6;
-    color: #333;
-    padding-top: 20px;
-}
-.v-datalist-container.components-list {
-  max-width: 960px;
-  margin: 0 auto;
-}
-.tasks-heading {
-    text-align: center; font-size: 1.25rem; font-weight: 600;
-    margin-bottom: 0.5rem; color: #444;
-}
-
-/* ----------------------------------------
-   Tabs & Subheading (Consistent)
-   ---------------------------------------- */
-.v-tabs ul {
-    display: flex; overflow-x: auto; white-space: nowrap; list-style: none;
-    padding: 0; margin: 0 3%; border-bottom: 1px solid #ddd;
-}
+/* --- Base, Tabs, Subheading Styles --- (Same as provided in prompt) */
+body { font-family: 'Open Sans', sans-serif; line-height: 1.6; color: #333; padding-top: 20px; }
+.v-datalist-container.components-list { max-width: 960px; margin: 0 auto; }
+.tasks-heading { text-align: center; font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; color: #444; }
+.v-tabs ul { display: flex; overflow-x: auto; white-space: nowrap; list-style: none; padding: 0; margin: 0 3%; border-bottom: 1px solid #ddd; }
 .v-tabs li { display: inline-block; margin: 0; }
-.v-tabs a {
-    display: inline-block; padding: 0.75rem 1.25rem;
-    text-decoration: none; color: #333; font-weight: 500;
-}
+.v-tabs a { display: inline-block; padding: 0.75rem 1.25rem; text-decoration: none; color: #333; font-weight: 500; }
 .v-tabs li.active > a { color: #3273dc; border-bottom: 3px solid #3273dc; }
 .v-tabs a:hover { background-color: #f0f0f0; border-radius: 4px; }
-.subheading-box {
-    background-color: #f7fdf7; border-left: 4px solid #3c763d;
-    padding: 0.75rem 1rem; margin: 1rem 3% 1.5rem 3%; border-radius: 4px;
-}
+.subheading-box { background-color: #f7fdf7; border-left: 4px solid #3c763d; padding: 0.75rem 1rem; margin: 1rem 3% 1.5rem 3%; border-radius: 4px; }
 .subheading-box .title { color: #3c763d; font-size: 1.25rem; margin: 0; font-weight: 600; }
-.v-datalist-container.components-list {
-    border: 2px solid #8dc63f; border-radius: 8px;
-    padding: 1rem 1rem 10px 1rem; background-color: #fafafa;
-}
-.v-datalist-title, .v-datalist-subtitle {
-    margin-bottom: 0.75rem; padding-bottom: 0.75rem;
-    border-bottom: 1px solid #eee;
-}
-.white-boxed-panel {
-    background-color: #fff; border: 1px solid #dbdbdb; border-radius: 6px;
-    padding: 1.25rem; margin-bottom: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
-}
+.v-datalist-container.components-list { border: 2px solid #8dc63f; border-radius: 8px; padding: 1rem 1rem 10px 1rem; background-color: #fafafa; }
+.v-datalist-title, .v-datalist-subtitle { margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid #eee; }
+.white-boxed-panel { background-color: #fff; border: 1px solid #dbdbdb; border-radius: 6px; padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07); }
+.controls-container { display: flex; justify-content: center; }
 
 /* ----------------------------------------
-   NEW STYLES FOR EXPERIMENT 4
+   STYLES FOR ACF IMAGE CHALLENGE
    ---------------------------------------- */
 
-/* Grid container for the four graphs */
 .graph-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
     padding: 1rem 0;
 }
 
-/* Styling for each individual graph card */
 .graph-card {
-    border: 3px solid transparent; /* Start with transparent border */
+    border: 3px solid transparent;
     border-radius: 8px;
     overflow: hidden;
     cursor: pointer;
@@ -74,81 +37,42 @@ body {
 .graph-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-    border-color: #a0a0a0; /* Highlight on hover */
+    border-color: #a0a0a0;
 }
 
-/* Let images fill the card */
 .graph-card img {
     display: block;
     width: 100%;
     height: auto;
 }
 
-/* When a card is selected by the user */
-.graph-card.selected {
-    border-color: #3273dc; /* Blue for selected */
-    box-shadow: 0 8px 20px rgba(50, 115, 220, 0.3);
+.graph-card.selected.incorrect-choice {
+    border-color: #ff3860; /* Red for incorrect */
+    box-shadow: 0 8px 20px rgba(255, 56, 96, 0.3);
 }
 
-/* When a choice has been made and feedback is shown */
 .graph-card.correct-choice {
     border-color: #23d160; /* Green for correct */
     box-shadow: 0 8px 20px rgba(35, 209, 96, 0.3);
 }
 
-.graph-card.incorrect-choice {
-    border-color: #ff3860; /* Red for incorrect */
-    box-shadow: 0 8px 20px rgba(255, 56, 96, 0.3);
+.graph-grid.disabled .graph-card:not(.selected):not(.correct-choice) {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #f5f5f5;
 }
 
-/* Style for when interaction is disabled after a choice */
-.graph-grid.disabled .graph-card:not(.selected):not(.correct-choice) {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
 .graph-grid.disabled .graph-card:hover {
     transform: none;
     box-shadow: none;
 }
 
-
-/* Styling for the observations/feedback panel */
-#observations .initial-text {
-    color: #777;
-    font-style: italic;
-    text-align: center;
-}
-
-#observations h5 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    text-align: center;
-}
-#observations .feedback-correct {
-    color: #23d160;
-}
-#observations .feedback-incorrect {
-    color: #ff3860;
-}
-
-#observations .analysis-item {
-    padding: 0.75rem;
-    margin-top: 1rem;
-    border-left-width: 4px;
-    border-left-style: solid;
-}
-#observations .analysis-item.correct {
-    border-left-color: #23d160;
-    background-color: #f6fff9;
-}
-#observations .analysis-item.incorrect {
-    border-left-color: #ff3860;
-    background-color: #fff5f7;
-}
-#observations .analysis-item p {
-    margin: 0;
-}
-#observations .analysis-item strong {
-    color: #333;
-}
+#observations .initial-text { color: #777; font-style: italic; text-align: center; }
+#observations h5 { font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; text-align: center; }
+#observations .feedback-correct { color: #23d160; }
+#observations .feedback-incorrect { color: #ff3860; }
+#observations .analysis-item { padding: 0.75rem; margin-top: 1rem; border-left: 4px solid; }
+#observations .analysis-item.correct { border-left-color: #23d160; background-color: #f6fff9; }
+#observations .analysis-item.incorrect { border-left-color: #ff3860; background-color: #fff5f7; }
+#observations .analysis-item p { margin: 0; }
+#observations .analysis-item strong { color: #333; }

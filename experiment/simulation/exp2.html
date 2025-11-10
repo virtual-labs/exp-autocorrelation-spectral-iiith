@@ -7,10 +7,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/css/style.min.css" />
     <!-- Link to the experiment-specific CSS file -->
     <link rel="stylesheet" href="./css/css2.css" />
-    <script type="text/javascript" id="MathJax-script" async
-            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <!-- Add Chart.js for plotting -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- ADD THIS SCRIPT FOR MATH RENDERING -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+    
     <title>Stationary & WSS Processes</title>
 </head>
 
@@ -27,7 +28,7 @@
         </div>
 
         <div class="subheading-box">
-            <p class="title">Identifying Stationary & WSS Processes</p>
+            <p class="title">Identifying Stationary Processes by Definition</p>
         </div>
 
         <div class="columns is-centered">
@@ -36,18 +37,18 @@
                     <div class="v-collapsible is-size-5">Instructions</div>
                     <div class="v-content" style="text-align: left; padding-left: 10%; padding-right: 10%">
                         <h4 style="font-weight: 600; font-size: 1.15em;">Theory</h4>
-                        <p>A random process is <strong>Strict-Sense Stationary (SSS)</strong> if its joint probability distribution is constant over time. A process is <strong>Wide-Sense Stationary (WSS)</strong> if its mean is constant and its autocorrelation function depends only on the time lag (\(\tau\)), not on absolute time.</p>
+                        <p>A random process is defined by its statistical properties over time. Key classifications include:</p>
                         <ul style="list-style: disc; font-size: 1em; line-height: 1.6; margin-left: 20px; margin-top: 1rem;">
-                            <li><strong>WSS Process:</strong> Mean is constant. ACF, \(R(t_1, t_2)\), depends only on \(\tau = t_1 - t_2\).</li>
-                            <li><strong>Non-Stationary (Mean):</strong> The mean of the process changes over time.</li>
-                            <li><strong>Non-Stationary (ACF):</strong> The mean may be constant, but the ACF changes depending on where it is calculated in time.</li>
+                            <li><strong>Strict-Sense Stationary (SSS):</strong> The joint probability distribution of any set of samples is invariant with respect to a shift in time. This is the strongest form of stationarity.</li>
+                            <li><strong>Wide-Sense Stationary (WSS):</strong> A weaker form of stationarity where the mean of the process is constant, and the autocorrelation function depends only on the time lag (τ), not on absolute time. All SSS processes are WSS, but the reverse is not always true.</li>
+                            <li><strong>Non-Stationary:</strong> A process that does not meet the criteria for WSS. Either its mean is a function of time, or its autocorrelation depends on absolute time as well as the time lag.</li>
                         </ul>
                         <h4 style="font-weight: 600; font-size: 1.15em; margin-top: 1rem;">Procedure</h4>
                         <ul style="list-style: disc; font-size: 1em; line-height: 1.6; margin-left: 20px;">
-                            <li>Select a "Mystery Signal" to begin.</li>
-                            <li>A long realization of the signal will be plotted. Drag the shaded <strong>"Inspector Window"</strong> across the plot.</li>
-                            <li>Observe the <strong>Local Mean</strong> and <strong>Local ACF</strong> plots. Note how they change (or don't change) as you move the window.</li>
-                            <li>Once you have a conclusion, select your answer from the dropdown and press <strong>"Submit Answer"</strong>.</li>
+                            <li>Select a "Mystery Process" to begin.</li>
+                            <li>An equation defining a random process X(t) will be displayed, along with definitions for all its variables.</li>
+                            <li>Analyze the equation to determine if the process is SSS, WSS, or Non-Stationary.</li>
+                            <li>Select your answer from the dropdown and press <strong>"Submit Answer"</strong> to see a detailed explanation with mathematical proofs and plots.</li>
                         </ul>
                     </div>
                 </div>
@@ -60,51 +61,38 @@
                 <div class="column is-11-desktop is-12-tablet is-12-mobile">
                     <div class="v-datalist-container components-list">
                         <h3 class="v-datalist-title" style="text-align: center;">
-                            Signal Analysis Workbench
+                            Process Identification Workbench
                         </h3>
 
                         <div class="white-boxed-panel">
-                            <h4 class="v-datalist-subtitle">Select a Mystery Signal:</h4>
+                            <h4 class="v-datalist-subtitle">Select a Mystery Process:</h4>
                             <div id="signal-selector-container" class="controls-container">
                                 <!-- JS will populate these buttons -->
                             </div>
                         </div>
 
-                        <!-- Container for the main signal plot and the draggable window -->
-                        <div class="white-boxed-panel">
-                             <h4 class="v-datalist-subtitle">Signal Realization</h4>
-                            <div id="main-plot-wrapper">
-                                <canvas id="mainSignalChart"></canvas>
-                                <div id="inspector-window"></div>
-                            </div>
-                        </div>
-
-                        <!-- Container for analysis plots -->
-                        <div class="analysis-grid">
-                            <div class="white-boxed-panel">
-                                <h4 class="v-datalist-subtitle">Local Mean</h4>
-                                <div id="mean-display" class="analysis-box">
-                                    <p>0.00</p>
-                                </div>
-                            </div>
-                            <div class="white-boxed-panel">
-                                 <h4 class="v-datalist-subtitle">Local ACF</h4>
-                                <div class="analysis-box">
-                                     <canvas id="acfChart"></canvas>
-                                </div>
-                            </div>
+                        <!-- Container for the equation and variable definitions -->
+                        <div class="white-boxed-panel" id="process-display-panel">
+                             <h4 class="v-datalist-subtitle">Process Definition: X(t)</h4>
+                             <div id="equation-container" class="equation-box">
+                                <!-- JS will render the equation here -->
+                             </div>
+                             <h4 class="v-datalist-subtitle" style="margin-top: 1.5rem;">Variable Definitions</h4>
+                             <div id="variable-definitions" class="definitions-box">
+                                <!-- JS will populate variable info -->
+                             </div>
                         </div>
                         
-                        <!-- NEW Submission Panel -->
+                        <!-- Submission Panel -->
                         <div class="white-boxed-panel" id="submission-panel">
                             <h4 class="v-datalist-subtitle">What type of process is this?</h4>
                             <div class="submission-controls">
                                 <div class="select is-primary">
                                     <select id="user-guess">
                                         <option value="">-- Select your answer --</option>
+                                        <option value="sss">Strict-Sense Stationary (SSS)</option>
                                         <option value="wss">Wide-Sense Stationary (WSS)</option>
-                                        <option value="nonStatMean">Non-Stationary (Mean)</option>
-                                        <option value="nonStatAcf">Non-Stationary (ACF)</option>
+                                        <option value="nonStat">Non-Stationary</option>
                                     </select>
                                 </div>
                                 <button id="submitBtn" class="button is-success is-medium">Submit Answer</button>
@@ -113,11 +101,11 @@
                         </div>
 
 
-                        <!-- Container for feedback -->
-                        <div class="white-boxed-panel">
-                            <h4 class="v-datalist-subtitle">Observations</h4>
-                            <div id="observations">
-                                <p class="initial-text">Select a signal to begin the analysis.</p>
+                        <!-- Container for feedback and detailed explanation -->
+                        <div class="white-boxed-panel" id="explanation-panel" style="display: none;">
+                            <h4 class="v-datalist-subtitle">Analysis & Explanation</h4>
+                            <div id="explanation-content">
+                                <!-- JS will populate the detailed explanation -->
                             </div>
                         </div>
                     </div>

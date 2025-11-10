@@ -67,7 +67,7 @@
         "d": "Correct. Narrower autocorrelation (in time) leads to broader PSD (in frequency)."
       },
       "correctAnswer": "d",
-      "difficulty": "difficult"
+      "difficulty": "advanced"
     },
     {
       "question": "Which of the following signals would likely have the **widest** power spectral density?",
@@ -84,7 +84,7 @@
         "d": "Slow variation implies lower frequency content."
       },
       "correctAnswer": "b",
-      "difficulty": "difficult"
+      "difficulty": "advanced"
     },
     {
       "question": "Which condition must hold for a signal's autocorrelation to be a valid candidate for Fourier transformation into PSD?",
@@ -101,7 +101,7 @@
         "d": "Zero-mean is not a strict requirement for PSD derivation."
       },
       "correctAnswer": "c",
-      "difficulty": "difficult"
+      "difficulty": "advanced"
     }
   ]
 }
