@@ -1,5 +1,3 @@
-### References
-
 [1] [The Probability Course: Autocorrelation](https://www.probabilitycourse.com/chapter10/10_1_2_mean_and_correlation_functions.php)
 
 [2] [The Probability Course: Power Spectral Density](https://www.probabilitycourse.com/chapter10/10_2_1_power_spectral_density.php)

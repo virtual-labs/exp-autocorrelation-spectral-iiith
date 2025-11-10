@@ -1,5 +1,3 @@
-## **Autocorrelation Function (ACF)**
-
 The **Autocorrelation Function (ACF)**, denoted $ R_X(\tau) $ quantifies how a random process $ X(t) $ correlates with a time-shifted version of itself:
 
 $$
@@ -19,11 +17,13 @@ $$
    $$
    |R_X(\tau)| \le R_X(0)
    $$
+
 2. **Even Symmetry:**
 
    $$
    R_X(\tau) = R_X(-\tau)
    $$
+
 3. **Non-Negative Power Spectrum:**
 
    $$
@@ -32,7 +32,7 @@ $$
 
 ---
 
-## **Power Spectral Density (PSD)**
+### **Power Spectral Density (PSD)**
 
 The **Power Spectral Density (PSD)** describes how the power of a random process is distributed over frequency.
 
@@ -50,7 +50,7 @@ $$
 
 ---
 
-## **The Wiener–Khinchin Theorem**
+### **The Wiener–Khinchin Theorem**
 
 $$
 \boxed{S_X(f) = \mathcal{F}\{R_X(\tau)\}} \quad \text{and} \quad \boxed{R_X(\tau) = \mathcal{F}^{-1}\{S_X(f)\}}
@@ -58,7 +58,7 @@ $$
 
 ---
 
-## **Stationarity**
+### **Stationarity**
 
 **Stationarity** describes how the statistical properties of a random process behave over time.
 It tells us whether the process’s behavior is consistent (time-invariant) or whether it changes (time-varying).
@@ -96,6 +96,7 @@ A process $ X(t) $ is **WSS** if it satisfies:
    $$
    \mathbb{E}[X(t)] = \mu_X = \text{constant}
    $$
+
 2. **Autocorrelation depends only on time lag:**
 
    $$
@@ -157,8 +158,8 @@ If the process is **non-stationary**, these tools may not be valid or may give m
 
 ### **Summary Table**
 
-| Type                                    | Definition                                             | Examples                                             | Remarks                                      |
-| --------------------------------------- | ------------------------------------------------------ | ---------------------------------------------------- | -------------------------------------------- |
-| **Strict-Sense Stationary (SSS)** | All joint distributions are invariant under time shift | Sinusoid with random phase, white noise              | Hard to verify; strongest form               |
-| **Wide-Sense Stationary (WSS)**   | Mean constant, ACF depends only on lag                 | Gaussian noise, AR(1) process with stable parameters | Most common assumption in practice           |
+| Type                              | Definition                                             | Examples                                             | Remarks                                    |
+| --------------------------------- | ------------------------------------------------------ | ---------------------------------------------------- | ------------------------------------------ |
+| **Strict-Sense Stationary (SSS)** | All joint distributions are invariant under time shift | Sinusoid with random phase, white noise              | Hard to verify; strongest form             |
+| **Wide-Sense Stationary (WSS)**   | Mean constant, ACF depends only on lag                 | Gaussian noise, AR(1) process with stable parameters | Most common assumption in practice         |
 | **Non-Stationary**                | Mean or correlation changes with time                  | Speech, climate data, trends                         | Often approximated as “locally stationary” |
