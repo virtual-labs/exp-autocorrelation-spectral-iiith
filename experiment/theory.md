@@ -17,13 +17,11 @@ $$
    $$
    |R_X(\tau)| \le R_X(0)
    $$
-
 2. **Even Symmetry:**
 
    $$
    R_X(\tau) = R_X(-\tau)
    $$
-
 3. **Non-Negative Power Spectrum:**
 
    $$
@@ -83,7 +81,7 @@ Shifting the observation window in time does **not** change the statistics of th
 
 **Examples:**
 
-- A pure sinusoid \$ X(t) = A $\cos(\omega t + \phi) $ where $ \phi $ is a uniform random variable over $[0, 2\pi)$→ SSS because its distribution is independent of time.
+- A pure sinusoid  $X(t) = A \cos(\omega t + \phi) $ where $ \phi $ is a uniform random variable over $[0, 2\pi)$→ SSS because its distribution is independent of time.
 
 #### **2. Wide-Sense Stationary (WSS)**
 
@@ -96,7 +94,6 @@ A process $ X(t) $ is **WSS** if it satisfies:
    $$
    \mathbb{E}[X(t)] = \mu_X = \text{constant}
    $$
-
 2. **Autocorrelation depends only on time lag:**
 
    $$
@@ -158,8 +155,8 @@ If the process is **non-stationary**, these tools may not be valid or may give m
 
 ### **Summary Table**
 
-| Type                              | Definition                                             | Examples                                             | Remarks                                    |
-| --------------------------------- | ------------------------------------------------------ | ---------------------------------------------------- | ------------------------------------------ |
-| **Strict-Sense Stationary (SSS)** | All joint distributions are invariant under time shift | Sinusoid with random phase, white noise              | Hard to verify; strongest form             |
-| **Wide-Sense Stationary (WSS)**   | Mean constant, ACF depends only on lag                 | Gaussian noise, AR(1) process with stable parameters | Most common assumption in practice         |
+| Type                                    | Definition                                             | Examples                                             | Remarks                                      |
+| --------------------------------------- | ------------------------------------------------------ | ---------------------------------------------------- | -------------------------------------------- |
+| **Strict-Sense Stationary (SSS)** | All joint distributions are invariant under time shift | Sinusoid with random phase, white noise              | Hard to verify; strongest form               |
+| **Wide-Sense Stationary (WSS)**   | Mean constant, ACF depends only on lag                 | Gaussian noise, AR(1) process with stable parameters | Most common assumption in practice           |
 | **Non-Stationary**                | Mean or correlation changes with time                  | Speech, climate data, trends                         | Often approximated as “locally stationary” |
