@@ -1,32 +1,32 @@
 The **Autocorrelation Function (ACF)**, denoted $ R_X(\tau) $ quantifies how a random process $ X(t) $ correlates with a time-shifted version of itself:
 
-$$
+$$\begin{equation}
 R_X(\tau) = \mathbb{E}[X(t) \, X(t + \tau)]
-$$
+\end{equation}$$
 
 If the process has a non-zero mean $\mu_X = \mathbb{E}[X(t)] $, then:
 
-$$
+$$\begin{equation}
 C_X(\tau) = \mathbb{E}[(X(t) - \mu_X)(X(t + \tau) - \mu_X)] = R_X(\tau) - \mu_X^2
-$$
+\end{equation}$$
 
 #### **Key Properties of a Valid ACF (for a real-valued WSS process):**
 
 1. **Maximum at Zero Lag:**
 
-   $$
+   $$\begin{equation}
    |R_X(\tau)| \le R_X(0)
-   $$
+   \end{equation}$$
 2. **Even Symmetry:**
 
-   $$
+   $$\begin{equation}
    R_X(\tau) = R_X(-\tau)
-   $$
+   \end{equation}$$
 3. **Non-Negative Power Spectrum:**
 
-   $$
+   $$\begin{equation}
    S_X(f) \ge 0 \quad \forall f
-   $$
+   \end{equation}$$
 
 ---
 
@@ -36,23 +36,23 @@ The **Power Spectral Density (PSD)** describes how the power of a random process
 
 Defined as:
 
-$$
+$$\begin{equation}
 S_X(f) = \int_{-\infty}^{\infty} R_X(\tau) e^{-j 2\pi f \tau} \, d\tau
-$$
+\end{equation}$$
 
 Inverse relation:
 
-$$
+$$\begin{equation}
 R_X(\tau) = \int_{-\infty}^{\infty} S_X(f) e^{j 2\pi f \tau} \, df
-$$
+\end{equation}$$
 
 ---
 
 ### **The Wiener–Khinchin Theorem**
 
-$$
+$$\begin{equation}
 \boxed{S_X(f) = \mathcal{F}\{R_X(\tau)\}} \quad \text{and} \quad \boxed{R_X(\tau) = \mathcal{F}^{-1}\{S_X(f)\}}
-$$
+\end{equation}$$
 
 ---
 
@@ -69,10 +69,10 @@ A random process $X(t)$ is **Strict-Sense Stationary** if **all** its joint prob
 
 That is, for any integer $ n \,$ time instants $ t_1, t_2, \ldots, t_n $, and any time shift $T $\:
 
-$$
+$$\begin{equation}
 f_{X(t_1), X(t_2), \ldots, X(t_n)}(x_1, x_2, \ldots, x_n)
 = f_{X(t_1 + T), X(t_2 + T), \ldots, X(t_n + T)}(x_1, x_2, \ldots, x_n)
-$$
+\end{equation}$$
 
 This means **the entire probabilistic behavior** of the process looks the same no matter when you observe it.
 
@@ -91,14 +91,14 @@ A process $ X(t) $ is **WSS** if it satisfies:
 
 1. **Constant Mean:**
 
-   $$
+   $$\begin{equation}
    \mathbb{E}[X(t)] = \mu_X = \text{constant}
-   $$
+   \end{equation}$$
 2. **Autocorrelation depends only on time lag:**
 
-   $$
+   $$\begin{equation}
    R_X(t_1, t_2) = R_X(t_1 - t_2) = R_X(\tau)
-   $$
+   \end{equation}$$
 
 This means that the correlation between two values of $ X(t) $ depends only on **how far apart** they are in time (the lag $ \tau )$, not **when** they were measured.
 
