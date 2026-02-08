@@ -1,78 +1,96 @@
 The **Autocorrelation Function (ACF)**, denoted $ R_X(\tau) $ quantifies how a random process $ X(t) $ correlates with a time-shifted version of itself:
 
-$$\begin{equation}
+$$
+\begin{equation}
 R_X(\tau) = \mathbb{E}[X(t) \, X(t + \tau)]
-\end{equation}$$
+\end{equation}
+$$
 
 If the process has a non-zero mean $\mu_X = \mathbb{E}[X(t)] $, then:
 
-$$\begin{equation}
+$$
+\begin{equation}
 C_X(\tau) = \mathbb{E}[(X(t) - \mu_X)(X(t + \tau) - \mu_X)] = R_X(\tau) - \mu_X^2
-\end{equation}$$
+\end{equation}
+$$
 
-#### **Key Properties of a Valid ACF (for a real-valued WSS process):**
+### **1 Key Properties of a Valid ACF (for a real-valued WSS process):**
 
 1. **Maximum at Zero Lag:**
 
-   $$\begin{equation}
+   $$
+   \begin{equation}
    |R_X(\tau)| \le R_X(0)
-   \end{equation}$$
+   \end{equation}
+   $$
 2. **Even Symmetry:**
 
-   $$\begin{equation}
+   $$
+   \begin{equation}
    R_X(\tau) = R_X(-\tau)
-   \end{equation}$$
+   \end{equation}
+   $$
 3. **Non-Negative Power Spectrum:**
 
-   $$\begin{equation}
+   $$
+   \begin{equation}
    S_X(f) \ge 0 \quad \forall f
-   \end{equation}$$
+   \end{equation}
+   $$
 
 ---
 
-### **Power Spectral Density (PSD)**
+### **2 Power Spectral Density (PSD)**
 
 The **Power Spectral Density (PSD)** describes how the power of a random process is distributed over frequency.
 
 Defined as:
 
-$$\begin{equation}
+$$
+\begin{equation}
 S_X(f) = \int_{-\infty}^{\infty} R_X(\tau) e^{-j 2\pi f \tau} \, d\tau
-\end{equation}$$
+\end{equation}
+$$
 
 Inverse relation:
 
-$$\begin{equation}
+$$
+\begin{equation}
 R_X(\tau) = \int_{-\infty}^{\infty} S_X(f) e^{j 2\pi f \tau} \, df
-\end{equation}$$
+\end{equation}
+$$
 
 ---
 
-### **The Wiener–Khinchin Theorem**
+### **3 The Wiener–Khinchin Theorem**
 
-$$\begin{equation}
+$$
+\begin{equation}
 \boxed{S_X(f) = \mathcal{F}\{R_X(\tau)\}} \quad \text{and} \quad \boxed{R_X(\tau) = \mathcal{F}^{-1}\{S_X(f)\}}
-\end{equation}$$
+\end{equation}
+$$
 
 ---
 
-### **Stationarity**
+### **4 Stationarity**
 
 **Stationarity** describes how the statistical properties of a random process behave over time.
 It tells us whether the process’s behavior is consistent (time-invariant) or whether it changes (time-varying).
 
 A random process \( X(t) \) is said to be **stationary** if its statistical characteristics — such as mean, variance, and correlation — do **not change with time**. Otherwise, it is **non-stationary**.
 
-#### **1. Strict-Sense Stationary (SSS)**
+#### **i. Strict-Sense Stationary (SSS)**
 
 A random process $X(t)$ is **Strict-Sense Stationary** if **all** its joint probability distributions are invariant under time shifts.
 
 That is, for any integer $ n \,$ time instants $ t_1, t_2, \ldots, t_n $, and any time shift $T $\:
 
-$$\begin{equation}
+$$
+\begin{equation}
 f_{X(t_1), X(t_2), \ldots, X(t_n)}(x_1, x_2, \ldots, x_n)
 = f_{X(t_1 + T), X(t_2 + T), \ldots, X(t_n + T)}(x_1, x_2, \ldots, x_n)
-\end{equation}$$
+\end{equation}
+$$
 
 This means **the entire probabilistic behavior** of the process looks the same no matter when you observe it.
 
@@ -83,7 +101,7 @@ Shifting the observation window in time does **not** change the statistics of th
 
 - A pure sinusoid  $X(t) = A \cos(\omega t + \phi) $ where $ \phi $ is a uniform random variable over $[0, 2\pi)$→ SSS because its distribution is independent of time.
 
-#### **2. Wide-Sense Stationary (WSS)**
+#### **ii. Wide-Sense Stationary (WSS)**
 
 Since verifying full strict-sense stationarity is often impractical, we use a weaker but very useful notion: **Wide-Sense Stationarity (WSS).**
 
@@ -91,14 +109,18 @@ A process $ X(t) $ is **WSS** if it satisfies:
 
 1. **Constant Mean:**
 
-   $$\begin{equation}
+   $$
+   \begin{equation}
    \mathbb{E}[X(t)] = \mu_X = \text{constant}
-   \end{equation}$$
+   \end{equation}
+   $$
 2. **Autocorrelation depends only on time lag:**
 
-   $$\begin{equation}
+   $$
+   \begin{equation}
    R_X(t_1, t_2) = R_X(t_1 - t_2) = R_X(\tau)
-   \end{equation}$$
+   \end{equation}
+   $$
 
 This means that the correlation between two values of $ X(t) $ depends only on **how far apart** they are in time (the lag $ \tau )$, not **when** they were measured.
 
@@ -112,7 +134,7 @@ This means that the correlation between two values of $ X(t) $ depends only on *
 - A zero-mean white noise process (flat PSD).
 - A stationary Gaussian process with constant variance.
 
-#### **3. Non-Stationary Processes**
+#### **iii. Non-Stationary Processes**
 
 A process is **non-stationary** if it violates the WSS conditions:
 
@@ -127,7 +149,7 @@ A process is **non-stationary** if it violates the WSS conditions:
 
 ---
 
-### **Relationship Between SSS and WSS**
+### **5 Relationship Between SSS and WSS**
 
 - Every **Strict-Sense Stationary** process is also **Wide-Sense Stationary**.
 - The converse is **not necessarily true** — a process may have constant mean and lag-dependent autocorrelation but still have higher-order moments that vary with time.
@@ -140,7 +162,7 @@ $$
 
 ---
 
-### **Why Stationarity Matters**
+### **6 Why Stationarity Matters**
 
 Stationarity is crucial in signal processing and stochastic analysis because many analytical tools — such as the **Power Spectral Density (PSD)**, **Fourier Transform relationships**, and **filtering techniques** — assume that the process is WSS.
 
@@ -153,7 +175,7 @@ If the process is **non-stationary**, these tools may not be valid or may give m
 
 ---
 
-### **Summary Table**
+### **7 Summary Table**
 
 | Type                                    | Definition                                             | Examples                                             | Remarks                                      |
 | --------------------------------------- | ------------------------------------------------------ | ---------------------------------------------------- | -------------------------------------------- |
