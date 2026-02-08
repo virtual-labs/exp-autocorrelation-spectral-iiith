@@ -36,7 +36,7 @@
       "difficulty": "beginner"
     },
     {
-      "question": "What is the power spectral density (PSD) of a WSS process defined as?",
+      "question": "The Power Spectral Density (PSD) of a Wide Sense Stationary (WSS) process is defined as:",
       "answers": {
         "a": "The average value of the process over time",
         "b": "The derivative of the autocorrelation function",

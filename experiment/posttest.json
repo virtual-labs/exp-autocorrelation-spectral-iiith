@@ -2,7 +2,7 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "What is a key property of the autocorrelation function at lag τ = 0?",
+      "question": "What is a key property of the autocorrelation function at lag $$\\tau$$= 0?",
       "answers": {
         "a": "It is always zero",
         "b": "It gives the average power of the signal",
@@ -19,18 +19,18 @@
       "difficulty": "beginner"
     },
     {
-      "question": "Which of the following is always true for the autocorrelation function ( R_X(τ) ) of a real WSS signal?",
+      "question": "Which of the following is always true for the autocorrelation function ( R_X($$\\tau$$) ) of a real WSS signal?",
       "answers": {
-        "a": "It increases with τ",
+        "a": "It increases with $$\\tau$$",
         "b": "It is anti-symmetric",
-        "c": "It is symmetric around τ = 0",
-        "d": "It is zero for negative τ"
+        "c": "It is symmetric around $$\\tau$$ = 0",
+        "d": "It is zero for negative $$\\tau$$"
       },
       "explanations": {
-        "a": "No, autocorrelation typically decreases with increasing |τ|.",
+        "a": "No, autocorrelation typically decreases with increasing |$$\\tau$$|.",
         "b": "Incorrect. It's symmetric, not anti-symmetric.",
-        "c": "Correct. For real WSS processes, autocorrelation is symmetric:  (R_X(τ) = R_X(-τ)).",
-        "d": "It is defined for both positive and negative τ."
+        "c": "Correct. For real WSS processes, autocorrelation is symmetric:  (R_X($$\\tau$$) = R_X(-$$\\tau$$)).",
+        "d": "It is defined for both positive and negative $$\\tau$$."
       },
       "correctAnswer": "c",
       "difficulty": "intermediate"
@@ -90,7 +90,7 @@
       "question": "Which condition must hold for a signal's autocorrelation to be a valid candidate for Fourier transformation into PSD?",
       "answers": {
         "a": "It must be periodic",
-        "b": "It must be non-negative for all τ",
+        "b": "It must be non-negative for all $$\\tau$$",
         "c": "It must be absolutely integrable",
         "d": "It must be zero-mean"
       },
