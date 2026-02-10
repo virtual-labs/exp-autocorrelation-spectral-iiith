@@ -2,38 +2,106 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "What is a key property of the autocorrelation function at lag $$\\tau$$= 0?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "It is always zero",
+        "b": "It gives the average power of the signal",
+        "c": "It becomes imaginary",
+        "d": "It is undefined"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. It is not always zero.",
+        "b": "Correct. The autocorrelation at lag 0 represents the average power of the signal.",
+        "c": "No, autocorrelation is always a real-valued function for real signals.",
+        "d": "It is well-defined and crucial to the function."
       },
-      "correctAnswer": "a",
+      "correctAnswer": "b",
       "difficulty": "beginner"
     },
     {
-      "question": "This is a Sample Question 2?",
+      "question": "Which of the following is always true for the autocorrelation function ( R_X($$\\tau$$) ) of a real WSS signal?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "It increases with $$\\tau$$",
+        "b": "It is anti-symmetric",
+        "c": "It is symmetric around $$\\tau$$ = 0",
+        "d": "It is zero for negative $$\\tau$$"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "No, autocorrelation typically decreases with increasing |$$\\tau$$|.",
+        "b": "Incorrect. It's symmetric, not anti-symmetric.",
+        "c": "Correct. For real WSS processes, autocorrelation is symmetric:  (R_X($$\\tau$$) = R_X(-$$\\tau$$)).",
+        "d": "It is defined for both positive and negative $$\\tau$$."
       },
       "correctAnswer": "c",
-      "difficulty": "beginner"
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "If a process is wide-sense stationary but not strictly stationary, which of the following is NOT necessarily true?",
+      "answers": {
+        "a": "The mean is constant",
+        "b": "The autocorrelation depends only on lag",
+        "c": "The joint distribution is invariant under time shift",
+        "d": "The process has time-invariant second-order statistics"
+      },
+      "explanations": {
+        "a": "WSS requires constant mean.",
+        "b": "WSS requires autocorrelation to depend only on lag.",
+        "c": "Correct. This is a requirement for strict (not wide-sense) stationarity.",
+        "d": "WSS assumes time-invariant second-order statistics."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "How does the bandwidth of the power spectral density (PSD) relate to the time-domain autocorrelation function?",
+      "answers": {
+        "a": "Shorter autocorrelation implies narrower PSD",
+        "b": "Longer autocorrelation implies wider PSD",
+        "c": "They are unrelated",
+        "d": "Narrow autocorrelation corresponds to broader PSD"
+      },
+      "explanations": {
+        "a": "Incorrect. Shorter autocorrelation means it decays quickly, which results in a broader PSD.",
+        "b": "Incorrect. A longer autocorrelation leads to a narrower PSD.",
+        "c": "They are Fourier transform pairs, so they are strongly related.",
+        "d": "Correct. Narrower autocorrelation (in time) leads to broader PSD (in frequency)."
+      },
+      "correctAnswer": "d",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "Which of the following signals would likely have the **widest** power spectral density?",
+      "answers": {
+        "a": "A perfectly periodic sine wave",
+        "b": "A white noise process",
+        "c": "A constant DC signal",
+        "d": "A slowly varying random process"
+      },
+      "explanations": {
+        "a": "A sine wave has PSD concentrated at its frequency components.",
+        "b": "Correct. White noise has equal power at all frequencies — hence, widest PSD.",
+        "c": "DC signal has all energy at 0 Hz.",
+        "d": "Slow variation implies lower frequency content."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "Which condition must hold for a signal's autocorrelation to be a valid candidate for Fourier transformation into PSD?",
+      "answers": {
+        "a": "It must be periodic",
+        "b": "It must be non-negative for all $$\\tau$$",
+        "c": "It must be absolutely integrable",
+        "d": "It must be zero-mean"
+      },
+      "explanations": {
+        "a": "Periodicity is not required.",
+        "b": "Autocorrelation can be negative and still be valid.",
+        "c": "Correct. For Fourier transform to exist, autocorrelation should be absolutely integrable.",
+        "d": "Zero-mean is not a strict requirement for PSD derivation."
+      },
+      "correctAnswer": "c",
+      "difficulty": "advanced"
     }
   ]
 }

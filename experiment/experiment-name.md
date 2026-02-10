@@ -1,1 +1,1 @@
-## Experiment name
+## Autocorrelation and Power Spectral Density
