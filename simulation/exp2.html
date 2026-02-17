@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/css/style.min.css" />
+    <!-- Link to the experiment-specific CSS file -->
+    <link rel="stylesheet" href="./css/css2.css" />
+    <!-- Add Chart.js for plotting -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- ADD THIS SCRIPT FOR MATH RENDERING -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+    
+    <title>Stationary & WSS Processes</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="tasks-heading">Tasks</div>
+
+        <div class="v-tabs">
+            <ul>
+                <li><a href="exp1.html">Sub Experiment - 1</a></li>
+                <li class="active"><a href="exp2.html">Sub Experiment - 2</a></li>
+                <li><a href="exp3.html">Sub Experiment - 3</a></li>
+            </ul>
+        </div>
+
+        <div class="subheading-box">
+            <p class="title">Identifying Stationary Processes by Definition</p>
+        </div>
+
+        <div class="columns is-centered">
+            <div class="column is-11-desktop is-12-tablet is-12-mobile">
+                <div class="v-collapsible-instruction-container v-instruction-container">
+                    <div class="v-collapsible is-size-5">Instructions</div>
+                    <div class="v-content" style="text-align: left; padding-left: 10%; padding-right: 10%">
+                        <h4 style="font-weight: 600; font-size: 1.15em;">Theory</h4>
+                        <p>A random process is defined by its statistical properties over time. Key classifications include:</p>
+                        <ul style="list-style: disc; font-size: 1em; line-height: 1.6; margin-left: 20px; margin-top: 1rem;">
+                            <li><strong>Strict-Sense Stationary (SSS):</strong> The joint probability distribution of any set of samples is invariant with respect to a shift in time. This is the strongest form of stationarity.</li>
+                            <li><strong>Wide-Sense Stationary (WSS):</strong> A weaker form of stationarity where the mean of the process is constant, and the autocorrelation function depends only on the time lag (τ), not on absolute time. All SSS processes are WSS, but the reverse is not always true.</li>
+                            <li><strong>Non-Stationary:</strong> A process that does not meet the criteria for WSS. Either its mean is a function of time, or its autocorrelation depends on absolute time as well as the time lag.</li>
+                        </ul>
+                        <h4 style="font-weight: 600; font-size: 1.15em; margin-top: 1rem;">Procedure</h4>
+                        <ul style="list-style: disc; font-size: 1em; line-height: 1.6; margin-left: 20px;">
+                            <li>Select a "Mystery Process" to begin.</li>
+                            <li>An equation defining a random process X(t) will be displayed, along with definitions for all its variables.</li>
+                            <li>Analyze the equation to determine if the process is SSS, WSS, or Non-Stationary.</li>
+                            <li>Select your answer from the dropdown and press <strong>"Submit Answer"</strong> to see a detailed explanation with mathematical proofs and plots.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+
+        <section id="page5">
+            <div class="columns is-centered">
+                <div class="column is-11-desktop is-12-tablet is-12-mobile">
+                    <div class="v-datalist-container components-list">
+                        <h3 class="v-datalist-title" style="text-align: center;">
+                            Process Identification Workbench
+                        </h3>
+
+                        <div class="white-boxed-panel">
+                            <h4 class="v-datalist-subtitle">Select a Mystery Process:</h4>
+                            <div id="signal-selector-container" class="controls-container">
+                                <!-- JS will populate these buttons -->
+                            </div>
+                        </div>
+
+                        <!-- Container for the equation and variable definitions -->
+                        <div class="white-boxed-panel" id="process-display-panel">
+                             <h4 class="v-datalist-subtitle">Process Definition: X(t)</h4>
+                             <div id="equation-container" class="equation-box">
+                                <!-- JS will render the equation here -->
+                             </div>
+                             <h4 class="v-datalist-subtitle" style="margin-top: 1.5rem;">Variable Definitions</h4>
+                             <div id="variable-definitions" class="definitions-box">
+                                <!-- JS will populate variable info -->
+                             </div>
+                        </div>
+                        
+                        <!-- Submission Panel -->
+                        <div class="white-boxed-panel" id="submission-panel">
+                            <h4 class="v-datalist-subtitle">What type of process is this?</h4>
+                            <div class="submission-controls">
+                                <div class="select is-primary">
+                                    <select id="user-guess">
+                                        <option value="">-- Select your answer --</option>
+                                        <option value="sss">Strict-Sense Stationary (SSS)</option>
+                                        <option value="wss">Wide-Sense Stationary (WSS)</option>
+                                        <option value="nonStat">Non-Stationary</option>
+                                    </select>
+                                </div>
+                                <button id="submitBtn" class="button is-success is-medium">Submit Answer</button>
+                            </div>
+                            <div id="submission-feedback"></div>
+                        </div>
+
+
+                        <!-- Container for feedback and detailed explanation -->
+                        <div class="white-boxed-panel" id="explanation-panel" style="display: none;">
+                            <h4 class="v-datalist-subtitle">Analysis & Explanation</h4>
+                            <div id="explanation-content">
+                                <!-- JS will populate the detailed explanation -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/js/script.js"></script>
+    <!-- Link to the new experiment's JS file -->
+    <script src="./js/script2.js"></script>
+</body>
+</html>

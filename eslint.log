@@ -1,0 +1,20 @@
+
+/home/runner/work/exp-autocorrelation-spectral-iiith/exp-autocorrelation-spectral-iiith/experiment/simulation/js/script2.js
+  179:9   warning  'Chart' is not defined        no-undef
+  198:9   warning  'plot2Labels' is not defined  no-undef
+  203:9   warning  'plot2Labels' is not defined  no-undef
+  208:9   warning  'plot2Labels' is not defined  no-undef
+  213:30  warning  'plot2Labels' is not defined  no-undef
+  220:10  warning  'Chart' is not defined        no-undef
+  222:25  warning  'plot2Labels' is not defined  no-undef
+  308:9   warning  'MathJax' is not defined      no-undef
+
+/home/runner/work/exp-autocorrelation-spectral-iiith/exp-autocorrelation-spectral-iiith/experiment/simulation/js/script3.js
+  113:26  warning  'Chart' is not defined    no-undef
+  139:9   warning  'MathJax' is not defined  no-undef
+  179:9   warning  'MathJax' is not defined  no-undef
+  212:13  warning  'MathJax' is not defined  no-undef
+  232:14  warning  'MathJax' is not defined  no-undef
+
+✖ 13 problems (0 errors, 13 warnings)
+

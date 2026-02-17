@@ -1,0 +1,145 @@
+/* ----------------------------------------
+   Base & General Styling (Consistent with other labs)
+   ---------------------------------------- */
+body {
+    font-family: 'Open Sans', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    padding-top: 20px;
+}
+.tasks-heading {
+    text-align: center; font-size: 1.25rem; font-weight: 600;
+    margin-bottom: 0.5rem; color: #444;
+}
+.v-tabs ul {
+    display: flex; overflow-x: auto; white-space: nowrap; list-style: none;
+    padding: 0; margin: 0 3%; border-bottom: 1px solid #ddd;
+}
+.v-tabs li { display: inline-block; margin: 0; }
+.v-tabs a {
+    display: inline-block; padding: 0.75rem 1.25rem;
+    text-decoration: none; color: #333; font-weight: 500;
+}
+.v-tabs li.active > a { color: #3273dc; border-bottom: 3px solid #3273dc; }
+.v-tabs a:hover { background-color: #f0f0f0; border-radius: 4px; }
+.subheading-box {
+    background-color: #f7fdf7; border-left: 4px solid #3c763d;
+    padding: 0.75rem 1rem; margin: 1rem 3% 1.5rem 3%; border-radius: 4px;
+}
+.subheading-box .title { color: #3c763d; font-size: 1.25rem; margin: 0; font-weight: 600; }
+.v-datalist-container.components-list {
+    border: 2px solid #8dc63f; border-radius: 8px;
+    padding: 1rem 1rem 10px 1rem; background-color: #fafafa;
+}
+.v-datalist-title, .v-datalist-subtitle {
+    margin-bottom: 0.75rem; padding-bottom: 0.75rem;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+.white-boxed-panel {
+    background-color: #fff; border: 1px solid #dbdbdb; border-radius: 6px;
+    padding: 1.25rem; margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+}
+.controls-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* ----------------------------------------
+   NEW STYLES FOR PROCESS IDENTIFICATION
+   ---------------------------------------- */
+
+/* Equation and Definitions Styling */
+.equation-box {
+    font-size: 1.5em; /* Make equation larger */
+    padding: 1.5rem;
+    text-align: center;
+    background-color: #f5f5f5;
+    border-radius: 6px;
+    overflow-x: auto;
+}
+.definitions-box {
+    padding: 0 1rem;
+    font-size: 1.1em;
+}
+.definitions-box ul {
+    list-style: disc;
+    margin-left: 25px;
+}
+
+/* Submission Panel */
+.submission-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+#submission-feedback {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 1.1em;
+    text-align: center;
+    display: none; /* Hidden by default */
+}
+#submission-feedback.correct {
+    background-color: #f6fff9;
+    border: 2px solid #23d160;
+    color: #0e6b2e;
+    display: block;
+}
+#submission-feedback.incorrect {
+    background-color: #fff5f7;
+    border: 2px solid #ff3860;
+    color: #cc0f35;
+    display: block;
+}
+/* ADDED for "Partially Correct" answers */
+#submission-feedback.partial {
+    background-color: #fffaf5;
+    border: 2px solid #ffae42;
+    color: #cc8400;
+    display: block;
+}
+
+
+/* Explanation Panel */
+#explanation-panel {
+    background-color: #f6f9ff;
+    border: 1px solid #cddcff;
+}
+#explanation-content {
+    font-size: 1.1em;
+    padding: 1rem;
+    border-radius: 4px;
+}
+#explanation-content h4 {
+    font-weight: 600;
+    font-size: 1.2em;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #3273dc;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.25rem;
+}
+#explanation-content p {
+    margin-bottom: 1rem;
+}
+
+/* Plot containers within explanation */
+.plot-container {
+    position: relative;
+    width: 90%;
+    max-width: 600px;
+    height: 300px;
+    margin: 1.5rem auto;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
