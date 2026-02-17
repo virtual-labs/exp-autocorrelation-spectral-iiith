@@ -2,7 +2,7 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "What does the autocorrelation function measure in a random process?",
+      "question": "1: What does the autocorrelation function measure in a random process?",
       "answers": {
         "a": "The mean of the process",
         "b": "The similarity between values of the process at different times",
@@ -19,7 +19,7 @@
       "difficulty": "beginner"
     },
     {
-      "question": "In a wide-sense stationary (WSS) process, the autocorrelation function depends on:",
+      "question": "2: In a wide-sense stationary (WSS) process, the autocorrelation function depends on:",
       "answers": {
         "a": "Absolute time",
         "b": "Frequency",
@@ -36,7 +36,7 @@
       "difficulty": "beginner"
     },
     {
-      "question": "The Power Spectral Density (PSD) of a Wide Sense Stationary (WSS) process is defined as:",
+      "question": "3: The Power Spectral Density (PSD) of a Wide Sense Stationary (WSS) process is defined as:",
       "answers": {
         "a": "The average value of the process over time",
         "b": "The derivative of the autocorrelation function",
@@ -53,7 +53,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "Which of the following is **not** true for a wide-sense stationary process?",
+      "question": "4: Which of the following is **not** true for a wide-sense stationary process?",
       "answers": {
         "a": "Mean is constant over time",
         "b": "Variance depends on time",
@@ -70,7 +70,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "Which domain does the power spectral density (PSD) represent the signal in?",
+      "question": "5: Which domain does the power spectral density (PSD) represent the signal in?",
       "answers": {
         "a": "Time domain",
         "b": "Spatial domain",

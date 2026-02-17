@@ -2,7 +2,7 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "What is a key property of the autocorrelation function at lag $$\\tau$$= 0?",
+      "question": "1: What is a key property of the autocorrelation function at lag $$\\tau= 0$$?",
       "answers": {
         "a": "It is always zero",
         "b": "It gives the average power of the signal",
@@ -19,11 +19,11 @@
       "difficulty": "beginner"
     },
     {
-      "question": "Which of the following is always true for the autocorrelation function ( R_X($$\\tau$$) ) of a real WSS signal?",
+      "question": "2: Which of the following is always true for the autocorrelation function $$R_X(\\tau)$$ of a real WSS signal?",
       "answers": {
         "a": "It increases with $$\\tau$$",
         "b": "It is anti-symmetric",
-        "c": "It is symmetric around $$\\tau$$ = 0",
+        "c": "It is symmetric around $$\\tau = 0$$",
         "d": "It is zero for negative $$\\tau$$"
       },
       "explanations": {
@@ -36,7 +36,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "If a process is wide-sense stationary but not strictly stationary, which of the following is NOT necessarily true?",
+      "question": "3: If a process is wide-sense stationary but not strictly stationary, which of the following is NOT necessarily true?",
       "answers": {
         "a": "The mean is constant",
         "b": "The autocorrelation depends only on lag",
@@ -53,7 +53,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "How does the bandwidth of the power spectral density (PSD) relate to the time-domain autocorrelation function?",
+      "question": "4: How does the bandwidth of the power spectral density (PSD) relate to the time-domain autocorrelation function?",
       "answers": {
         "a": "Shorter autocorrelation implies narrower PSD",
         "b": "Longer autocorrelation implies wider PSD",
@@ -70,7 +70,7 @@
       "difficulty": "advanced"
     },
     {
-      "question": "Which of the following signals would likely have the **widest** power spectral density?",
+      "question": "5: Which of the following signals would likely have the **widest** power spectral density?",
       "answers": {
         "a": "A perfectly periodic sine wave",
         "b": "A white noise process",
@@ -87,7 +87,7 @@
       "difficulty": "advanced"
     },
     {
-      "question": "Which condition must hold for a signal's autocorrelation to be a valid candidate for Fourier transformation into PSD?",
+      "question": "6: Which condition must hold for a signal's autocorrelation to be a valid candidate for Fourier transformation into PSD?",
       "answers": {
         "a": "It must be periodic",
         "b": "It must be non-negative for all $$\\tau$$",
